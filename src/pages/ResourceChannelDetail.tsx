@@ -2,6 +2,12 @@ import { useState, useEffect } from 'react';
 import { useParams, Link, useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { cn } from '@/lib/utils';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Badge } from '@/components/ui/badge';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { ArrowLeft, Search, Filter, Star, MapPin, DollarSign, Users, TrendingUp, Heart, Share2, MessageCircle } from 'lucide-react';
 
 // Mock resource data for a specific channel
 const mockResources = [
@@ -366,100 +372,94 @@ export default function ResourceChannelDetail() {
       </div>
       
       {/* Filter and search bar */}
-      <div className="bg-white dark:bg-gray-800 rounded-xl shadow-md p-4">
-        <div className="flex flex-col md:flex-row gap-4">
-          {/* Search input */}
-          <div className="relative flex-grow">
-            <i className="fa-search absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"></i>
-            <input
-              type="text"
-              placeholder={`搜索${currentChannel.title}资源...`}
-              className="w-full pl-10 pr-4 py-3 rounded-lg border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-900 focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent transition-all"
-            />
-          </div>
-          
-          {/* Mobile filter button */}
-          <button 
-            className="md:hidden flex items-center justify-center gap-2 px-4 py-3 bg-white dark:bg-gray-700 border border-gray-200 dark:border-gray-600 rounded-lg text-gray-700 dark:text-gray-300"
-            onClick={() => setIsFilterOpen(!isFilterOpen)}
-          >
-            <i className="fa-filter"></i>
-            <span>筛选</span>
-          </button>
-          
-          {/* Desktop filter dropdowns */}
-          <div className="hidden md:flex gap-3">
-            <div className="relative">
-              <select
-                value={activeFilters.priceRange}
-                onChange={(e) => handleFilterChange('priceRange', e.target.value)}
-                className="appearance-none bg-white dark:bg-gray-700 border border-gray-200 dark:border-gray-600 text-gray-700 dark:text-gray-300 rounded-lg px-4 py-3 pr-10 focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent transition-all"
-              >
-                {filterOptions.priceRanges.map(option => (<option key={option.value} value={option.value}>
-                    {option.label}
-                  </option>
-                ))}
-              </select>
-              <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-500">
-                <i className="fa-chevron-down text-xs"></i>
+      <Card className="shadow-md">
+        <CardContent className="p-4">
+          <div className="flex flex-col md:flex-row gap-4">
+            {/* Search input */}
+            <div className="relative flex-grow">
+              <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                <Search className="h-4 w-4 text-gray-400" />
               </div>
+              <Input
+                type="text"
+                placeholder={`搜索${currentChannel.title}资源...`}
+                className="pl-10 bg-gray-50 dark:bg-gray-900 focus:ring-green-500 focus:border-green-500"
+              />
             </div>
-            
-            <div className="relative">
-              <select
-                value={activeFilters.location}
-                onChange={(e) => handleFilterChange('location', e.target.value)}
-                className="appearance-none bg-white dark:bg-gray-700 border border-gray-200 dark:border-gray-600 text-gray-700 dark:text-gray-300 rounded-lg px-4 py-3 pr-10 focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent transition-all"
-              >
-                {filterOptions.locations.map(option => (
-                  <option key={option.value} value={option.value}>
-                    {option.label}
-                  </option>
-                ))}
-              </select>
-              <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-500">
-                <i className="fa-chevron-down text-xs"></i>
-              </div>
-            </div>
-            
-            <div className="relative">
-              <select
-                value={activeFilters.sortBy}
-                onChange={(e) => handleFilterChange('sortBy', e.target.value)}
-                className="appearance-none bg-white dark:bg-gray-700 border border-gray-200 dark:border-gray-600 text-gray-700 dark:text-gray-300 rounded-lg px-4 py-3 pr-10 focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent transition-all"
-              >
-                {filterOptions.sortOptions.map(option => (
-                  <option key={option.value} value={option.value}>
-                    {option.label}
-                  </option>
-                ))}
-              </select>
-              <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-500">
-                <i className="fa-chevron-down text-xs"></i>
-              </div>
+
+            {/* Mobile filter button */}
+            <Button
+              variant="outline"
+              className="md:hidden"
+              onClick={() => setIsFilterOpen(!isFilterOpen)}
+            >
+              <Filter className="h-4 w-4 mr-2" />
+              筛选
+            </Button>
+          
+            {/* Desktop filter dropdowns */}
+            <div className="hidden md:flex gap-3">
+              <Select value={activeFilters.priceRange} onValueChange={(value) => handleFilterChange('priceRange', value)}>
+                <SelectTrigger className="w-40 focus:ring-green-500 focus:border-green-500">
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  {filterOptions.priceRanges.map(option => (
+                    <SelectItem key={option.value} value={option.value}>
+                      {option.label}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+
+              <Select value={activeFilters.location} onValueChange={(value) => handleFilterChange('location', value)}>
+                <SelectTrigger className="w-40 focus:ring-green-500 focus:border-green-500">
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  {filterOptions.locations.map(option => (
+                    <SelectItem key={option.value} value={option.value}>
+                      {option.label}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+
+              <Select value={activeFilters.sortBy} onValueChange={(value) => handleFilterChange('sortBy', value)}>
+                <SelectTrigger className="w-40 focus:ring-green-500 focus:border-green-500">
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  {filterOptions.sortOptions.map(option => (
+                    <SelectItem key={option.value} value={option.value}>
+                      {option.label}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
             </div>
           </div>
-        </div>
-        
-        {/* Mobile filter panel */}
-        {isFilterOpen && (
+          {/* Mobile filter panel */}
+          {isFilterOpen && (
           <div className="md:hidden mt-4 pt-4 border-t border-gray-200 dark:border-gray-700 space-y-4">
             <div>
               <h3 className="text-sm font-medium text-gray-900 dark:text-white mb-2">价格范围</h3>
               <div className="grid grid-cols-3 gap-2">
                 {filterOptions.priceRanges.map(option => (
-                  <button
+                  <Button
                     key={option.value}
+                    variant={activeFilters.priceRange === option.value ? "default" : "outline"}
+                    size="sm"
                     onClick={() => handleFilterChange('priceRange', option.value)}
                     className={cn(
-                      "text-xs py-2 px-2 rounded-lg text-center",
+                      "text-xs h-8",
                       activeFilters.priceRange === option.value
-                        ? "bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-400 border border-green-200 dark:border-green-800"
-                        : "bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 border border-gray-200 dark:border-gray-600"
+                        ? "bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-400 border-green-200 dark:border-green-800"
+                        : "bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 border-gray-200 dark:border-gray-600"
                     )}
                   >
                     {option.label}
-                  </button>
+                  </Button>
                 ))}
               </div>
             </div>
@@ -468,18 +468,20 @@ export default function ResourceChannelDetail() {
               <h3 className="text-sm font-medium text-gray-900 dark:text-white mb-2">地区</h3>
               <div className="grid grid-cols-3 gap-2">
                 {filterOptions.locations.map(option => (
-                  <button
+                  <Button
                     key={option.value}
+                    variant={activeFilters.location === option.value ? "default" : "outline"}
+                    size="sm"
                     onClick={() => handleFilterChange('location', option.value)}
                     className={cn(
-                      "text-xs py-2 px-2 rounded-lg text-center",
+                      "text-xs h-8",
                       activeFilters.location === option.value
-                        ? "bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-400 border border-green-200 dark:border-green-800"
-                        : "bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 border border-gray-200 dark:border-gray-600"
+                        ? "bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-400 border-green-200 dark:border-green-800"
+                        : "bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 border-gray-200 dark:border-gray-600"
                     )}
                   >
                     {option.label}
-                  </button>
+                  </Button>
                 ))}
               </div>
             </div>
@@ -488,23 +490,27 @@ export default function ResourceChannelDetail() {
               <h3 className="text-sm font-medium text-gray-900 dark:text-white mb-2">排序方式</h3>
               <div className="grid grid-cols-2 gap-2">
                 {filterOptions.sortOptions.map(option => (
-                  <button
+                  <Button
                     key={option.value}
+                    variant={activeFilters.sortBy === option.value ? "default" : "outline"}
+                    size="sm"
                     onClick={() => handleFilterChange('sortBy', option.value)}
                     className={cn(
-                      "text-xs py-2 px-2 rounded-lg text-center",
+                      "text-xs h-8",
                       activeFilters.sortBy === option.value
-                        ? "bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-400 border border-green-200 dark:border-green-800"
-                        : "bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 border border-gray-200 dark:border-gray-600"
+                        ? "bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-400 border-green-200 dark:border-green-800"
+                        : "bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 border-gray-200 dark:border-gray-600"
                     )}
                   >
                     {option.label}
-                  </button>
+                  </Button>
                 ))}
               </div>
             </div>
           </div>
-        )}
+          )}
+        </CardContent>
+      </Card>
         
         {/* Active filters display */}
         {(activeFilters.selectedTags.length > 0 || 
@@ -549,7 +555,9 @@ export default function ResourceChannelDetail() {
               </div>
             ))}
             
-            <button 
+            <Button
+              variant="ghost"
+              size="sm"
               onClick={() => setActiveFilters({
                 priceRange: 'all',
                 location: 'all',
@@ -559,33 +567,35 @@ export default function ResourceChannelDetail() {
               className="text-sm text-green-600 dark:text-green-400 hover:text-green-700 dark:hover:text-green-300 ml-2"
             >
               清除全部
-            </button>
+            </Button>
           </div>
         )}
-      </div>
-      
+
       {/* Main content with sidebar */}
       <div className="flex flex-col lg:flex-row gap-8">
         {/* Sidebar with filters */}
         <aside className="hidden lg:block w-64 flex-shrink-0">
-          <div className="bg-white dark:bg-gray-800 rounded-xl shadow-md p-6 sticky top-24">
-            <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-4">资源标签</h3>
-            <div className="flex flex-wrap gap-2 mb-6">
-              {currentChannel.tags.map(tag => (
-                <button
-                  key={tag}
-                  onClick={() => toggleTagFilter(tag)}
-                  className={cn(
-                    "px-3 py-1 rounded-full text-sm",
-                    activeFilters.selectedTags.includes(tag)
-                      ? "bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-400 border border-green-200 dark:border-green-800"
-                      : "bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 border border-gray-200 dark:border-gray-600 hover:bg-gray-200 dark:hover:bg-gray-600"
-                  )}
-                >
-                  {tag}
-                </button>
-              ))}
-            </div>
+          <Card className="shadow-md sticky top-24">
+            <CardContent className="p-6">
+              <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-4">资源标签</h3>
+              <div className="flex flex-wrap gap-2 mb-6">
+                {currentChannel.tags.map(tag => (
+                  <Button
+                    key={tag}
+                    variant={activeFilters.selectedTags.includes(tag) ? "default" : "outline"}
+                    size="sm"
+                    onClick={() => toggleTagFilter(tag)}
+                    className={cn(
+                      "text-sm h-7",
+                      activeFilters.selectedTags.includes(tag)
+                        ? "bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-400 border-green-200 dark:border-green-800"
+                        : "bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 border-gray-200 dark:border-gray-600"
+                    )}
+                  >
+                    {tag}
+                  </Button>
+                ))}
+              </div>
             
             <div className="border-t border-gray-200 dark:border-gray-700 pt-6 mt-6">
               <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-4">价格范围</h3>
@@ -644,15 +654,15 @@ export default function ResourceChannelDetail() {
               </div>
             </div>
             
-            <div className="mt-8">
-              <Link
-                to="/demand-publish"
-                className="block w-full py-3 bg-gradient-to-r from-green-600 to-teal-500 hover:from-green-700 hover:to-teal-600 text-white font-medium rounded-lg text-center shadow-md hover:shadow-lg transition-all duration-300"
-              >
-                发布需求 <i className="fa-plus ml-1"></i>
-              </Link>
-            </div>
-          </div>
+              <div className="mt-8">
+                <Button asChild className="w-full bg-gradient-to-r from-green-600 to-teal-500 hover:from-green-700 hover:to-teal-600 shadow-md hover:shadow-lg">
+                  <Link to="/demand-publish">
+                    发布需求 <TrendingUp className="ml-1 h-4 w-4" />
+                  </Link>
+                </Button>
+              </div>
+            </CardContent>
+          </Card>
         </aside>
         
         {/* Resource grid */}
@@ -683,8 +693,8 @@ export default function ResourceChannelDetail() {
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ duration: 0.3 }}
-                  className="bg-white dark:bg-gray-800 rounded-xl overflow-hidden shadow-md hover:shadow-xl transition-all duration-300 border border-gray-100 dark:border-gray-700 flex flex-col h-full"
                 >
+                  <Card className="overflow-hidden shadow-md hover:shadow-xl transition-all duration-300 border border-gray-100 dark:border-gray-700 flex flex-col h-full">
                   <div className="relative">
                     <img 
                       src={resource.image} 
@@ -699,52 +709,52 @@ export default function ResourceChannelDetail() {
                       </div>
                     )}
                     <div className="absolute top-3 right-3">
-                      <button className="w-8 h-8 rounded-full bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm flex items-center justify-center text-gray-600 dark:text-gray-400 hover:text-red-500 transition-colors">
-                        <i className="fa-heart-o"></i>
-                      </button>
+                      <Button size="sm" variant="outline" className="w-8 h-8 rounded-full bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm p-0 border-0 text-gray-600 dark:text-gray-400 hover:text-red-500">
+                        <Heart className="h-4 w-4" />
+                      </Button>
                     </div>
                     <div className="absolute bottom-3 left-3 flex gap-1">
                       {resource.tags.slice(0, 2).map((tag, i) => (
-                        <span key={i} className="text-xs px-2 py-1 bg-black/60 backdrop-blur-sm text-white rounded-full">
+                        <Badge key={i} variant="secondary" className="text-xs bg-black/60 backdrop-blur-sm text-white">
                           {tag}
-                        </span>
+                        </Badge>
                       ))}
                       {resource.tags.length > 2 && (
-                        <span className="text-xs px-2 py-1 bg-black/60 backdrop-blur-sm text-white rounded-full">
+                        <Badge variant="secondary" className="text-xs bg-black/60 backdrop-blur-sm text-white">
                           +{resource.tags.length - 2}
-                        </span>
+                        </Badge>
                       )}
                     </div>
                   </div>
-                  
-                  <div className="p-5 flex-grow flex flex-col">
+
+                  <CardContent className="p-5 flex-grow flex flex-col">
                     <div className="flex justify-between items-start mb-2">
                       <h3 className="text-lg font-bold text-gray-900 dark:text-white hover:text-green-600 dark:hover:text-green-400 transition-colors line-clamp-1">
                         {resource.title}
                       </h3>
                       <div className="flex items-center text-yellow-400">
-                        <i className="fa-star"></i>
+                        <Star className="h-4 w-4 fill-current" />
                         <span className="ml-1 text-sm text-gray-700 dark:text-gray-300">{resource.rating}</span>
                       </div>
                     </div>
-                    
+
                     <div className="text-sm text-gray-600 dark:text-gray-400 mb-3 line-clamp-2">
                       由 <span className="font-medium text-gray-700 dark:text-gray-300">{resource.provider}</span> 提供 · {resource.location}
                     </div>
-                    
+
                     <div className="mt-auto pt-4 border-t border-gray-100 dark:border-gray-700 flex justify-between items-center">
                       <div className="text-lg font-bold text-green-700 dark:text-green-400">
                         {resource.price}
                       </div>
-                      
-                      <Link
-                        to={`/resources/${resource.id}`}
-                        className="px-4 py-2 bg-green-600 hover:bg-green-700 text-white text-sm font-medium rounded-lg transition-colors duration-300"
-                      >
-                        查看详情
-                      </Link>
+
+                      <Button asChild size="sm" className="bg-green-600 hover:bg-green-700">
+                        <Link to={`/resources/${resource.id}`}>
+                          查看详情
+                        </Link>
+                      </Button>
                     </div>
-                  </div>
+                  </CardContent>
+                  </Card>
                 </motion.div>
               ))}
             </div>
