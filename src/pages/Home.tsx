@@ -1,9 +1,6 @@
 import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, AreaChart, Area } from 'recharts';
-import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { ArrowRight, Search, ExternalLink, Database } from 'lucide-react';
 
 
 
@@ -124,17 +121,19 @@ export default function Home() {
               transition={{ duration: 0.6, delay: 0.4 }}
               className="flex flex-wrap gap-4 pt-4"
             >
-              <Button asChild className="px-8 py-3 bg-gradient-to-r from-green-600 to-teal-500 hover:from-green-700 hover:to-teal-600 text-white font-medium rounded-lg shadow-lg shadow-green-500/20 transition-all duration-300 transform hover:-translate-y-1">
-                <Link to="/demand-publish">
-                  发布需求 <ArrowRight className="ml-2 h-4 w-4" />
-                </Link>
-              </Button>
+              <Link
+                to="/demand-publish"
+                className="px-auto py-3 px-8 bg-gradient-to-r from-green-600 to-teal-500 hover:from-green-700 hover:to-teal-600 text-white font-medium rounded-lg shadow-lg shadow-green-500/20 transition-all duration-300 transform hover:-translate-y-1"
+              >
+                发布需求 <i className="fa-arrow-right ml-2"></i>
+              </Link>
               
-              <Button asChild variant="outline" className="px-8 py-3 bg-white dark:bg-gray-800 text-green-700 dark:text-green-400 font-medium rounded-lg shadow-md hover:shadow-lg transition-all duration-300 transform hover:-translate-y-1">
-                <Link to="/resource-channels">
-                  浏览资源 <Search className="ml-2 h-4 w-4" />
-                </Link>
-              </Button>
+              <Link
+                to="/resource-channels"
+                className="px-auto py-3 px-8 bg-white dark:bg-gray-800 text-green-700 dark:text-green-400 font-medium rounded-lg shadow-md hover:shadow-lg transition-all duration-300 transform hover:-translate-y-1"
+              >
+                浏览资源 <i className="fa-search ml-2"></i>
+              </Link>
             </motion.div>
             
             <div className="flex items-center gap-6 pt-6">
@@ -196,21 +195,18 @@ export default function Home() {
           { value: '2,384', label: '成功对接', icon: 'fa-handshake', color: 'text-emerald-600 dark:text-emerald-400' },
           { value: '88%', label: '对接成功率', icon: 'fa-chart-line', color: 'text-olive-600 dark:text-olive-400' },
         ].map((stat, index) => (
-          <motion.div
+          <motion.div 
             key={index}
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5, delay: index * 0.1 }}
+            className="bg-white dark:bg-gray-800 rounded-xl p-6 shadow-lg hover:shadow-xl transition-all duration-300 border border-gray-100 dark:border-gray-700"
           >
-            <Card className="hover:shadow-xl transition-all duration-300">
-              <CardContent className="p-6">
-                <div className={`text-3xl font-bold ${stat.color} mb-1`}>{stat.value}</div>
-                <div className="text-gray-600 dark:text-gray-300 flex items-center">
-                  <i className={`fa ${stat.icon} mr-2`}></i>
-                  {stat.label}
-                </div>
-              </CardContent>
-            </Card>
+            <div className={`text-3xl font-bold ${stat.color} mb-1`}>{stat.value}</div>
+            <div className="text-gray-600 dark:text-gray-300 flex items-center">
+              <i className={`fa ${stat.icon} mr-2`}></i>
+              {stat.label}
+            </div>
           </motion.div>
         ))}
       </section>
@@ -231,48 +227,47 @@ export default function Home() {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.5, delay: index * 0.1 }}
-              className="group"
+              className="group bg-white dark:bg-gray-800 rounded-2xl overflow-hidden shadow-lg hover:shadow-xl transition-all duration-300 border border-gray-100 dark:border-gray-700 flex flex-col h-full"
             >
-              <Card className="rounded-2xl overflow-hidden shadow-lg hover:shadow-xl transition-all duration-300 flex flex-col h-full">
-                <CardHeader className="p-6 flex-grow">
-                  <div className={`w-14 h-14 rounded-xl bg-gradient-to-br ${category.color} flex items-center justify-center text-white text-2xl mb-5 group-hover:scale-110 transition-transform duration-300`}>
-                    <i className={`fa ${category.icon}`}></i>
-                  </div>
-                  <CardTitle className="text-xl group-hover:text-green-600 dark:group-hover:text-green-400 transition-colors duration-300 mb-3">
-                    {category.title}
-                  </CardTitle>
-                  <CardDescription className="mb-4">
-                    {category.description}
-                  </CardDescription>
-                  <div className="text-sm text-gray-500 dark:text-gray-500 flex items-center">
-                    <Database className="mr-2 h-4 w-4 text-green-500 dark:text-green-500" />
-                    {category.count} 个资源
-                  </div>
-                </CardHeader>
-                <CardContent className="p-4 pt-0 mt-auto">
-                  <Button asChild variant="outline" className="w-full text-green-700 dark:text-green-400 font-medium border-green-200 dark:border-green-800 hover:bg-green-50 dark:hover:bg-green-900/20">
-                    <Link to={`/resource-channels/${category.id}`}>
-                      查看详情 <ArrowRight className="ml-1 h-3 w-3" />
-                    </Link>
-                  </Button>
-                </CardContent>
-              </Card>
+              <div className="p-6 flex-grow">
+                <div className={`w-14 h-14 rounded-xl bg-gradient-to-br ${category.color} flex items-center justify-center text-white text-2xl mb-5 group-hover:scale-110 transition-transform duration-300`}>
+                  <i className={`fa ${category.icon}`}></i>
+                </div>
+                <h3 className="text-xl font-bold text-gray-900 dark:text-white mb=3 group-hover:text-green-600 dark:group-hover:text-green-400 transition-colors duration-300">
+                  {category.title}
+                </h3>
+                <p className="text-gray-600 dark:text-gray-400 mb-4">
+                  {category.description}
+                </p>
+                <div className="text-sm text-gray-500 dark:text-gray-500 flex items-center">
+                  <i className="fa-database mr-2 text-green-500 dark:text-green-500"></i>
+                  {category.count} 个资源
+                </div>
+              </div>
+              <div className="p-4 pt-0 mt-auto">
+                <Link
+                  to={`/resource-channels/${category.id}`}
+                  className="block w-full text-center py-2 text-green-700 dark:text-green-400 font-medium border border-green-200 dark:border-green-800 rounded-lg hover:bg-green-50 dark:hover:bg-green-900/20 transition-colors duration-300"
+                >
+                  查看详情 <i className="fa-arrow-right ml-1 text-sm"></i>
+                </Link>
+              </div>
             </motion.div>
           ))}
         </div>
       </section>
       
       {/* Platform Activity */}
-      <Card className="rounded-2xl shadow-lg p-6 md:p-8">
+      <section className="bg-white dark:bg-gray-800 rounded-2xl shadow-lg p-6 md:p-8">
         <div className="flex flex-col md:flex-row md:items-center justify-between mb-8">
           <div>
             <h2 className="text-2xl md:text-3xl font-bold text-gray-900 dark:text-white mb-2">平台活跃度</h2>
             <p className="text-gray-600 dark:text-gray-400">资源与需求增长趋势分析</p>
           </div>
           <div className="flex gap-2 mt-4 md:mt-0">
-            <Button size="sm" className="bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-400 hover:bg-green-200 dark:hover:bg-green-900/50">月度</Button>
-            <Button size="sm" variant="ghost" className="text-gray-600 dark:text-gray-400">季度</Button>
-            <Button size="sm" variant="ghost" className="text-gray-600 dark:text-gray-400">年度</Button>
+            <button className="px-4 py-2 bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-400 rounded-lg text-sm font-medium">月度</button>
+            <button className="px-4 py-2 text-gray-600 dark:text-gray-400 rounded-lg text-sm font-medium hover:bg-gray-100 dark:hover:bg-gray-700">季度</button>
+            <button className="px-4 py-2 text-gray-600 dark:text-gray-400 rounded-lg text-sm font-medium hover:bg-gray-100 dark:hover:bg-gray-700">年度</button>
           </div>
         </div>
         
@@ -345,7 +340,7 @@ export default function Home() {
             </ResponsiveContainer>
           </div>
         </div>
-      </Card>
+      </section>
       
       {/* How It Works */}
       <section>
@@ -364,16 +359,13 @@ export default function Home() {
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.5, delay: index * 0.15 }}
+                className="bg-white dark:bg-gray-800 rounded-xl p-6 shadow-lg border border-gray-100 dark:border-gray-700 text-center"
               >
-                <Card className="rounded-xl shadow-lg text-center">
-                  <CardContent className="p-6">
-                    <div className="w-16 h-16 rounded-full bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-400 flex items-center justify-center text-2xl font-bold mx-auto mb-6">
-                      {step.step}
-                    </div>
-                    <CardTitle className="text-xl mb-3">{step.title}</CardTitle>
-                    <CardDescription>{step.description}</CardDescription>
-                  </CardContent>
-                </Card>
+                <div className="w-16 h-16 rounded-full bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-400 flex items-center justify-center text-2xl font-bold mx-auto mb-6">
+                  {step.step}
+                </div>
+                <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-3">{step.title}</h3>
+                <p className="text-gray-600 dark:text-gray-400">{step.description}</p>
               </motion.div>
             ))}
           </div>
@@ -384,11 +376,12 @@ export default function Home() {
         
         {/* CTA */}
         <div className="mt-16 text-center">
-          <Button asChild size="lg" className="px-8 py-4 bg-gradient-to-r from-green-600 to-teal-500 hover:from-green-700 hover:to-teal-600 text-white font-medium rounded-lg shadow-lg shadow-green-500/20 transition-all duration-300 transform hover:-translate-y-1">
-            <Link to="/resource-onboarding">
-              资源方入驻 <ArrowRight className="ml-2 h-4 w-4" />
-            </Link>
-          </Button>
+          <Link
+            to="/resource-onboarding"
+            className="inline-flex items-center px-8 py-4 bg-gradient-to-r from-green-600 to-teal-500 hover:from-green-700 hover:to-teal-600 text-white font-medium rounded-lg shadow-lg shadow-green-500/20 transition-all duration-300 transform hover:-translate-y-1"
+          >
+            资源方入驻 <i className="fa-arrow-right ml-2"></i>
+          </Link>
         </div>
       </section>
       
@@ -430,32 +423,28 @@ export default function Home() {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.5, delay: index * 0.15 }}
+              className="bg-white dark:bg-gray-800 rounded-xl p-6 shadow-lg border border-gray-100 dark:border-gray-700"
             >
-              <Card className="rounded-xl shadow-lg">
-                <CardContent className="p-6">
-                  <div className="flex items-center mb-4">
-                    {[...Array(5)].map((_, i) => (
-                      <i
-                        key={i}
-                        className={`fa-star ${i < testimonial.rating ? 'text-yellow-400' : 'text-gray-300 dark:text-gray-600'}`}
-                      ></i>
-                    ))}
-                  </div>
-                  <p className="text-gray-700 dark:text-gray-300 mb-6 italic">"{testimonial.content}"</p>
-
-                  <div className="flex items-center">
-                    <img
-                      src={testimonial.avatar}
-                      alt={testimonial.name}
-                      className="w-12 h-12 rounded-full object-cover mr-4 border-2 border-green-100 dark:border-green-900"
-                    />
-                    <div>
-                      <div className="font-bold text-gray-900 dark:text-white">{testimonial.name}</div>
-                      <div className="text-sm text-gray-600 dark:text-gray-400">{testimonial.title}</div>
-                    </div>
-                  </div>
-                </CardContent>
-              </Card>
+              <div className="flex items-center mb-4">
+                {[...Array(5)].map((_, i) => (
+                  <i 
+                    key={i} 
+                    className={`fa-star ${i < testimonial.rating ? 'text-yellow-400' : 'text-gray-300 dark:text-gray-600'}`}
+                  ></i>
+                ))}
+              </div><p className="text-gray-700 dark:text-gray-300 mb-6 italic">"{testimonial.content}"</p>
+              
+              <div className="flex items-center">
+                <img 
+                  src={testimonial.avatar} 
+                  alt={testimonial.name}
+                  className="w-12 h-12 rounded-full object-cover mr-4 border-2 border-green-100 dark:border-green-900"
+                />
+                <div>
+                  <div className="font-bold text-gray-900 dark:text-white">{testimonial.name}</div>
+                  <div className="text-sm text-gray-600 dark:text-gray-400">{testimonial.title}</div>
+                </div>
+              </div>
             </motion.div>
           ))}
         </div>
@@ -480,11 +469,12 @@ export default function Home() {
           </p>
           
           <div className="flex flex-wrap justify-center gap-4">
-            <Button asChild size="lg" className="px-10 py-3 bg-gradient-to-r from-green-600 to-teal-500 hover:from-green-700 hover:to-teal-600 text-white font-medium rounded-lg shadow-lg shadow-green-500/20 transition-all duration-300 transform hover:-translate-y-1">
-              <Link to="/resource-connection">
-                开始资源对接 <ExternalLink className="ml-2 h-4 w-4" />
-              </Link>
-            </Button>
+            <Link
+              to="/resource-connection"
+              className="px-auto py-3 px-10 bg-gradient-to-r from-green-600 to-teal-500 hover:from-green-700 hover:to-teal-600 text-white font-medium rounded-lg shadow-lg shadow-green-500/20 transition-all duration-300 transform hover:-translate-y-1"
+            >
+              开始资源对接 <i className="fa-exchange-alt ml-2"></i>
+            </Link>
           </div>
         </div>
       </section>

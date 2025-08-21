@@ -2,15 +2,6 @@ import { useState } from 'react';
 import { motion } from 'framer-motion';
 import { cn } from '@/lib/utils';
 import { toast } from 'sonner';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import { Textarea } from '@/components/ui/textarea';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Badge } from '@/components/ui/badge';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Calendar, FileText, DollarSign, Clock, User, Phone, Mail, Upload, X } from 'lucide-react';
 
 // Mock data for demand categories
 const demandCategories = [
@@ -242,36 +233,47 @@ export default function DemandPublish() {
       </div>
       
       {/* Tab navigation */}
-      <Tabs value={activeTab} onValueChange={(value) => setActiveTab(value as 'publish' | 'manage')} className="w-full">
-        <Card className="rounded-xl shadow-sm border border-gray-100 dark:border-gray-700">
-          <CardHeader className="pb-0">
-            <TabsList className="grid w-full grid-cols-2">
-              <TabsTrigger value="publish" className="flex items-center gap-2">
-                <FileText className="h-4 w-4" />
-                发布新需求
-              </TabsTrigger>
-              <TabsTrigger value="manage" className="flex items-center gap-2">
-                <Calendar className="h-4 w-4" />
-                我的需求管理
-              </TabsTrigger>
-            </TabsList>
-          </CardHeader>
-
-          <TabsContent value="publish">
-            <CardContent className="p-6 md:p-8">
+      <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700">
+        <div className="flex border-b border-gray-200 dark:border-gray-700">
+          <button
+            className={`flex-1 py-4 px-6 text-center font-medium transition-colors ${
+              activeTab === 'publish'
+                ? 'text-green-600 dark:text-green-400 border-b-2 border-green-600 dark:border-green-400'
+                : 'text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300'
+            }`}
+            onClick={() => setActiveTab('publish')}
+          >
+            <i className="fa-plus-circle mr-2"></i>发布新需求
+          </button>
+          <button
+            className={`flex-1 py-4 px-6 text-center font-medium transition-colors ${
+              activeTab === 'manage'
+                ? 'text-green-600 dark:text-green-400 border-b-2 border-green-600 dark:border-green-400'
+                : 'text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300'
+            }`}
+            onClick={() => setActiveTab('manage')}
+          >
+            <i className="fa-list-alt mr-2"></i>我的需求管理
+          </button>
+        </div>
+        
+        {/* Publish new demand form */}
+        {activeTab === 'publish' && (
+          <div className="p-6 md:p-8">
             <form onSubmit={handleSubmit} className="space-y-8">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 {/* Demand title */}
                 <div className="space-y-2">
-                  <Label htmlFor="title">
+                  <label htmlFor="title" className="block text-sm font-medium text-gray-700 dark:text-gray-300">
                     需求标题 <span className="text-red-500">*</span>
-                  </Label>
-                  <Input
+                  </label>
+                  <input
                     type="text"
                     id="title"
                     name="title"
                     value={formData.title}
                     onChange={handleInputChange}
+                    className="w-full px-4 py-3 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-900 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent transition-all"
                     placeholder="请输入清晰简洁的需求标题"
                   />
                   {errors.title && (
@@ -310,17 +312,18 @@ export default function DemandPublish() {
               
               {/* Demand description */}
               <div className="space-y-2">
-                <Label htmlFor="description">
+                <label htmlFor="description" className="block text-sm font-medium text-gray-700 dark:text-gray-300">
                   需求详细描述 <span className="text-red-500">*</span>
-                </Label>
-                <Textarea
+                </label>
+                <textarea
                   id="description"
                   name="description"
                   value={formData.description}
                   onChange={handleInputChange}
                   rows={6}
+                  className="w-full px-4 py-3 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-900 text-gray-900 dark:text-white focus:focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent transition-all"
                   placeholder="请详细描述您的需求，包括具体要求、技术参数、预期效果等信息（至少50个字）"
-                />
+                ></textarea>
                 <div className="flex justify-between items-center">
                   <p className="text-sm text-gray-500 dark:text-gray-500">
                     {formData.description.length}/2000 字
@@ -417,69 +420,54 @@ export default function DemandPublish() {
                 </h3>
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                   <div className="space-y-2">
-                    <Label htmlFor="contactPerson">
+                    <label htmlFor="contactPerson" className="block text-sm font-medium text-gray-700 dark:text-gray-300">
                       联系人姓名
-                    </Label>
-                    <div className="relative">
-                      <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                        <User className="h-4 w-4 text-gray-400" />
-                      </div>
-                      <Input
-                        type="text"
-                        id="contactPerson"
-                        name="contactPerson"
-                        value={formData.contactPerson}
-                        onChange={handleInputChange}
-                        className="pl-10"
-                        placeholder="请输入联系人姓名"
-                      />
-                    </div>
+                    </label>
+                    <input
+                      type="text"
+                      id="contactPerson"
+                      name="contactPerson"
+                      value={formData.contactPerson}
+                      onChange={handleInputChange}
+                      className="w-full px-4 py-3 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-900 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent transition-all"
+                      placeholder="请输入联系人姓名"
+                    />
                     {errors.contactPerson && (
                       <p className="text-red-500 text-sm mt-1">{errors.contactPerson}</p>
                     )}
                   </div>
                   
                   <div className="space-y-2">
-                    <Label htmlFor="contactPhone">
+                    <label htmlFor="contactPhone" className="block text-sm font-medium text-gray-700 dark:text-gray-300">
                       联系电话
-                    </Label>
-                    <div className="relative">
-                      <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                        <Phone className="h-4 w-4 text-gray-400" />
-                      </div>
-                      <Input
-                        type="tel"
-                        id="contactPhone"
-                        name="contactPhone"
-                        value={formData.contactPhone}
-                        onChange={handleInputChange}
-                        className="pl-10"
-                        placeholder="请输入手机号码"
-                      />
-                    </div>
+                    </label>
+                    <input
+                      type="tel"
+                      id="contactPhone"
+                      name="contactPhone"
+                      value={formData.contactPhone}
+                      onChange={handleInputChange}
+                      className="w-full px-4 py-3 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-900 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent transition-all"
+                      placeholder="请输入手机号码"
+                    />
                     {errors.contactPhone && (
                       <p className="text-red-500 text-sm mt-1">{errors.contactPhone}</p>
                     )}
                   </div>
                   
                   <div className="space-y-2">
-                    <Label htmlFor="contactEmail">
+                    <label htmlFor="contactEmail" className="block text-sm font-medium text-gray-700 dark:text-gray-300">
                       联系邮箱
-                    </Label>
-                    <div className="relative">
-                      <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                        <Mail className="h-4 w-4 text-gray-400" />
-                      </div>
-                      <Input
-                        type="email"
-                        id="contactEmail"
-                        name="contactEmail"
-                        value={formData.contactEmail}
-                        onChange={handleInputChange}
-                        className="pl-10"
-                        placeholder="请输入邮箱地址"
-                      />
-                    </div>
+                    </label>
+                    <input
+                      type="email"
+                      id="contactEmail"
+                      name="contactEmail"
+                      value={formData.contactEmail}
+                      onChange={handleInputChange}
+                      className="w-full px-4 py-3 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-900 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent transition-all"
+                      placeholder="请输入邮箱地址"
+                    />
                     {errors.contactEmail && (
                       <p className="text-red-500 text-sm mt-1">{errors.contactEmail}</p>
                     )}
@@ -547,9 +535,9 @@ export default function DemandPublish() {
               
               {/* Submit button */}
               <div className="flex justify-end space-x-4 pt-4 border-t border-gray-200 dark:border-gray-700">
-                <Button
+                <button
                   type="button"
-                  variant="outline"
+                  className="px-6 py-3 border border-gray-300 dark:border-gray-600 rounded-lg text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors"
                   onClick={() => {
                     if (window.confirm('确定要取消吗？已填写的内容将不会保存。')) {
                       setFormData({
@@ -569,21 +557,22 @@ export default function DemandPublish() {
                   }}
                 >
                   取消
-                </Button>
-                <Button
+                </button>
+                <button
                   type="submit"
-                  className="bg-green-600 hover:bg-green-700"
+                  className="px-8 py-3 bg-green-600 hover:bg-green-700 text-white font-medium rounded-lg shadow-md hover:shadow-lg transition-all duration-300 flex items-center"
                 >
                   <span>发布需求</span>
-                  <Upload className="ml-2 h-4 w-4" />
-                </Button>
+                  <i className="fa-paper-plane ml-2"></i>
+                </button>
               </div>
             </form>
-            </CardContent>
-          </TabsContent>
-
-          <TabsContent value="manage">
-            <CardContent className="p-6 md:p-8">
+          </div>
+        )}
+        
+        {/* Manage demands tab */}
+        {activeTab === 'manage' && (
+          <div className="p-6 md:p-8">
             <div className="flex justify-between items-center mb-6">
               <h3 className="text-lg font-semibold text-gray-900 dark:text-white">我的需求列表</h3>
               <div className="relative">
@@ -726,10 +715,9 @@ export default function DemandPublish() {
                 </nav>
               </div>
             )}
-            </CardContent>
-          </TabsContent>
-        </Card>
-      </Tabs>
+          </div>
+        )}
+      </div>
     </div>
   );
 }

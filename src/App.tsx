@@ -8,6 +8,7 @@ import ResourceChannelDetail from "@/pages/ResourceChannelDetail";
 import ResourceChannels from "@/pages/ResourceChannels";
 import DemandPublish from "@/pages/DemandPublish";
 import ResourceProviderOnboarding from "@/pages/ResourceProviderOnboarding";
+import ResourceConnection from "@/pages/ResourceConnection";
 import ConnectionProgress from "@/pages/ConnectionProgress";
 import Login from "@/pages/Login";
 import Register from "@/pages/Register";
@@ -30,14 +31,16 @@ export default function App() {
             <Route path="/login" element={<Login />} />
             <Route path="/register" element={<Register />} />
             <Route path="/resource-channels" element={<ResourceChannels />} />
-            <Route path="/resource-channels/:id" element={<ResourceChannelDetail />} />
-            <Route path="/progress-tracking" element={<ConnectionProgress />} />
+             <Route path="/resource-channels/:id" element={<ResourceChannelDetail />} />
+              <Route path="/resources/:id" element={<ResourceChannelDetail />} />
+             <Route path="/progress-tracking" element={<ConnectionProgress />} />
+              <Route path="/resource-connection" element={<ResourceConnection />} />
             <Route path="/admin" element={<AdminDashboard />} />
             <Route path="/demand-publish" element={<DemandPublish />} />
               <Route path="/resource-onboarding" element={<ResourceProviderOnboarding />} />
               <Route path="/about" element={<Home />} />
             <Route path="/other" element={<div className="text-center text-xl">Other Page - Coming Soon</div>} />
-        </Routes>s
+        </Routes>
       </Layout>
     </AuthContext.Provider>
   );

@@ -2,14 +2,6 @@ import { useState } from 'react';
 import { motion } from 'framer-motion';
 import { cn } from '@/lib/utils';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Badge } from '@/components/ui/badge';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Progress } from '@/components/ui/progress';
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
-import { Search, Filter, MessageCircle, Calendar, TrendingUp, Eye, FileText, CheckCircle, Clock, AlertCircle } from 'lucide-react';
 
 // Mock data for connection projects
 const connectionProjects = [
@@ -430,14 +422,13 @@ export default function ConnectionProgress() {
         </div>
         
         {viewMode === 'detail' && (
-          <Button
-            variant="outline"
+          <button
             onClick={handleBackToList}
-            className="flex items-center"
+            className="flex items-center px-4 py-2 bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-300 border border-gray-300 dark:border-gray-700 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-750 transition-colors"
           >
-            <TrendingUp className="mr-2 h-4 w-4" />
+            <i className="fa-arrow-left mr-2"></i>
             返回列表
-          </Button>
+          </button>
         )}
       </div>
       
@@ -445,144 +436,150 @@ export default function ConnectionProgress() {
       {viewMode === 'list' && (
         <div className="space-y-6">
           {/* Filter and search */}
-          <Card className="shadow-sm border border-gray-100 dark:border-gray-700">
-            <CardContent className="p-4">
-              <div className="flex flex-col md:flex-row gap-4">
-                <div className="relative flex-grow">
-                  <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                    <Search className="h-4 w-4 text-gray-400" />
-                  </div>
-                  <Input
-                    type="text"
-                    placeholder="搜索对接项目..."
-                    className="pl-10 bg-gray-50 dark:bg-gray-900 focus:ring-green-500 focus:border-green-500"
-                  />
-                </div>
-
-                <div className="flex flex-wrap gap-3">
-                  <Select defaultValue="all">
-                    <SelectTrigger className="w-40 focus:ring-green-500 focus:border-green-500">
-                      <SelectValue />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="all">所有状态</SelectItem>
-                      <SelectItem value="matching">匹配中</SelectItem>
-                      <SelectItem value="negotiating">洽谈中</SelectItem>
-                      <SelectItem value="contracting">合同签订中</SelectItem>
-                      <SelectItem value="executing">执行中</SelectItem>
-                      <SelectItem value="completed">已完成</SelectItem>
-                      <SelectItem value="canceled">已取消</SelectItem>
-                    </SelectContent>
-                  </Select>
-                
-                  <Select defaultValue="all">
-                    <SelectTrigger className="w-40 focus:ring-green-500 focus:border-green-500">
-                      <SelectValue />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="all">所有时间</SelectItem>
-                      <SelectItem value="week">最近一周</SelectItem>
-                      <SelectItem value="month">最近一个月</SelectItem>
-                      <SelectItem value="quarter">最近三个月</SelectItem>
-                      <SelectItem value="halfyear">最近半年</SelectItem>
-                      <SelectItem value="year">最近一年</SelectItem>
-                    </SelectContent>
-                  </Select>
-                </div>
+          <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm p-4 border border-gray-100 dark:border-gray-700">
+            <div className="flex flex-col md:flex-row gap-4">
+              <div className="relative flex-grow">
+                <i className="fa-search absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"></i>
+                <input
+                  type="text"
+                  placeholder="搜索对接项目..."
+                  className="w-full pl-10 pr-4 py-3 rounded-lg border border-gray-300 dark:border-gray-600 bg-gray-50 dark:bg-gray-900 focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent transition-all"
+                />
               </div>
-            </CardContent>
-          </Card>
+              
+              <div className="flex flex-wrap gap-3">
+                <select className="px-4 py-3 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-900 text-gray-700 dark:text-gray-300 focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent transition-all">
+                  <option value="all">所有状态</option>
+                  <option value="matching">匹配中</option>
+                  <option value="negotiating">洽谈中</option>
+                  <option value="contracting">合同签订中</option>
+                  <option value="executing">执行中</option>
+                  <option value="completed">已完成</option>
+                  <option value="canceled">已取消</option>
+                </select>
+                
+                <select className="px-4 py-3 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-900 text-gray-700 dark:text-gray-300 focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent transition-all">
+                  <option value="all">所有时间</option>
+                  <option value="week">最近一周</option>
+                  <option value="month">最近一个月</option>
+                  <option value="quarter">最近三个月</option>
+                  <option value="halfyear">最近半年</option>
+                  <option value="year">最近一年</option>
+                </select>
+              </div>
+            </div>
+          </div>
           
           {/* Connection projects list */}
-          <Card className="shadow-sm border border-gray-100 dark:border-gray-700 overflow-hidden">
-            <CardContent className="p-0">
-              <div className="overflow-x-auto">
-                <Table>
-                  <TableHeader>
-                    <TableRow>
-                      <TableHead>项目名称</TableHead>
-                      <TableHead>资源提供方</TableHead>
-                      <TableHead>状态</TableHead>
-                      <TableHead>进度</TableHead>
-                      <TableHead>开始日期</TableHead>
-                      <TableHead>预计完成</TableHead>
-                      <TableHead>最近更新</TableHead>
-                      <TableHead className="text-right">操作</TableHead>
-                    </TableRow>
-                  </TableHeader>
-                  <TableBody>
-                    {connectionProjects.map((project) => (
-                      <TableRow
-                        key={project.id}
-                        className="hover:bg-gray-50 dark:hover:bg-gray-750 transition-colors cursor-pointer"
-                        onClick={() => handleSelectConnection(project.id)}
-                      >
-                        <TableCell>
-                          <div className="text-sm font-medium text-gray-900 dark:text-white">
-                            {project.title}
-                          </div>
-                          <div className="text-xs text-gray-500 dark:text-gray-500">
-                            需求ID: {project.demandId}
-                          </div>
-                        </TableCell>
-                        <TableCell>
-                          <div className="text-sm text-gray-700 dark:text-gray-300">{project.resourceProvider}</div>
-                        </TableCell>
-                        <TableCell>
-                          <Badge variant="secondary" className={project.statusColor}>
-                            {project.statusText}
-                          </Badge>
-                        </TableCell>
-                        <TableCell>
-                          <div className="space-y-1">
-                            <Progress
-                              value={project.progress}
-                              className="w-full h-2"
-                            />
-                            <div className="text-xs text-gray-500 dark:text-gray-500">
-                              {project.progress}% 完成
-                            </div>
-                          </div>
-                        </TableCell>
-                        <TableCell>
-                          <div className="text-sm text-gray-700 dark:text-gray-300">{project.createTime}</div>
-                        </TableCell>
-                        <TableCell>
-                          <div className="text-sm text-gray-700 dark:text-gray-300">{project.expectedCompletion}</div>
-                        </TableCell>
-                        <TableCell>
-                          <div className="text-sm text-gray-700 dark:text-gray-300">{project.recentUpdate}</div>
-                        </TableCell>
-                        <TableCell className="text-right">
-                          <Button variant="ghost" size="sm" className="text-green-600 dark:text-green-400 hover:text-green-800 dark:hover:text-green-300">
-                            查看详情
-                          </Button>
-                        </TableCell>
-                      </TableRow>
-                    ))}
-                  </TableBody>
-                </Table>
+          <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700 overflow-hidden">
+            <div className="overflow-x-auto">
+              <table className="min-w-full">
+                <thead className="bg-gray-50 dark:bg-gray-900">
+                  <tr>
+                    <th className="px-6 py-4 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                      项目名称
+                    </th>
+                    <th className="px-6 py-4 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                      资源提供方
+                    </th>
+                    <th className="px-6 py-4 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                      状态
+                    </th>
+                    <th className="px-6 py-4 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                      进度
+                    </th>
+                    <th className="px-6 py-4 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                      开始日期
+                    </th>
+                    <th className="px-6 py-4 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                      预计完成
+                    </th>
+                    <th className="px-6 py-4 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                      最近更新
+                    </th>
+                    <th className="px-6 py-4 text-right text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                      操作
+                    </th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-gray-200 dark:divide-gray-700">
+                  {connectionProjects.map((project) => (
+                    <tr 
+                      key={project.id} 
+                      className="hover:bg-gray-50 dark:hover:bg-gray-750 transition-colors cursor-pointer"
+                      onClick={() => handleSelectConnection(project.id)}
+                    >
+                      <td className="px-6 py-4 whitespace-nowrap">
+                        <div className="text-sm font-medium text-gray-900 dark:text-white">
+                          {project.title}
+                        </div>
+                        <div className="text-xs text-gray-500 dark:text-gray-500">
+                          需求ID: {project.demandId}
+                        </div>
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap">
+                        <div className="text-sm text-gray-700 dark:text-gray-300">{project.resourceProvider}</div>
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap">
+                        <span className={`inline-flex px-2 py-1 text-xs font-medium rounded-full ${project.statusColor}`}>
+                          {project.statusText}
+                        </span>
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap">
+                        <div className="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2">
+                          <div 
+                            className={`h-2 rounded-full ${
+                              project.status === 'completed' 
+                                ? 'bg-gray-500' 
+                                : project.status === 'canceled'
+                                  ? 'bg-red-500'
+                                  : 'bg-green-500'
+                            }`} 
+                            style={{ width: `${project.progress}%` }}
+                          ></div>
+                        </div>
+                        <div className="text-xs text-gray-500 dark:text-gray-500 mt-1">
+                          {project.progress}% 完成
+                        </div>
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap">
+                        <div className="text-sm text-gray-700 dark:text-gray-300">{project.createTime}</div>
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap">
+                        <div className="text-sm text-gray-700 dark:text-gray-300">{project.expectedCompletion}</div>
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap">
+                        <div className="text-sm text-gray-700 dark:text-gray-300">{project.recentUpdate}</div>
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                        <button className="text-green-600 dark:text-green-400 hover:text-green-800 dark:hover:text-green-300">
+                          查看详情
+                        </button>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+            
+            {/* Pagination */}
+            <div className="px-6 py-4 border-t border-gray-200 dark:border-gray-700 flex justify-between items-center">
+              <div className="text-sm text-gray-700 dark:text-gray-300">
+                显示 1-5 条，共 12 条
               </div>
-
-              {/* Pagination */}
-              <div className="px-6 py-4 border-t border-gray-200 dark:border-gray-700 flex justify-between items-center">
-                <div className="text-sm text-gray-700 dark:text-gray-300">
-                  显示 1-5 条，共 12 条
-                </div>
-                <div className="flex space-x-2">
-                  <Button variant="outline" size="sm" disabled>
-                    <TrendingUp className="h-4 w-4" />
-                  </Button>
-                  <Button variant="outline" size="sm" className="border-green-500 bg-green-50 dark:bg-green-900/20 text-green-700 dark:text-green-400">1</Button>
-                  <Button variant="outline" size="sm">2</Button>
-                  <Button variant="outline" size="sm">3</Button>
-                  <Button variant="outline" size="sm">
-                    <TrendingUp className="h-4 w-4" />
-                  </Button>
-                </div>
+              <div className="flex space-x-2">
+                <button className="px-3 py-1 rounded border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-900 text-gray-700 dark:text-gray-300 disabled:opacity-50 disabled:cursor-not-allowed" disabled>
+                  <i className="fa-chevron-left"></i>
+                </button>
+                <button className="px-3 py-1 rounded border border-green-500 bg-green-50 dark:bg-green-900/20 text-green-700 dark:text-green-400">1</button>
+                <button className="px-3 py-1 rounded border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-900 text-gray-700 dark:text-gray-300">2</button>
+                <button className="px-3 py-1 rounded border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-900 text-gray-700 dark:text-gray-300">3</button>
+                <button className="px-3 py-1 rounded border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-900 text-gray-700 dark:text-gray-300">
+                  <i className="fa-chevron-right"></i>
+                </button>
               </div>
-            </CardContent>
-          </Card>
+            </div>
+          </div>
         </div>
       )}
       

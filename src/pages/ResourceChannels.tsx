@@ -2,11 +2,6 @@ import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { cn } from '@/lib/utils';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Badge } from '@/components/ui/badge';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Search, Users, TrendingUp, CheckCircle, ArrowRight } from 'lucide-react';
 
 // 资源通道数据
 const resourceChannels = [
@@ -122,65 +117,58 @@ export default function ResourceChannels() {
       </div>
       
       {/* 搜索和筛选 */}
-      <Card className="shadow-md border border-gray-100 dark:border-gray-700">
-        <CardContent className="p-4">
-          <div className="flex flex-col md:flex-row gap-4">
-            {/* 搜索框 */}
-            <div className="relative flex-grow">
-              <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                <Search className="h-4 w-4 text-gray-400" />
-              </div>
-              <Input
-                type="text"
-                placeholder="搜索资源通道..."
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                className="pl-10 bg-gray-50 dark:bg-gray-900 focus:ring-green-500 focus:border-green-500"
-              />
-            </div>
-          
-            {/* 筛选选项 */}
-            <div className="flex flex-wrap gap-3">
-              <Button
-                variant={activeFilter === 'all' ? 'default' : 'outline'}
-                size="sm"
-                onClick={() => setActiveFilter('all')}
-                className={cn(
-                  activeFilter === 'all'
-                    ? "bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-400 hover:bg-green-200 dark:hover:bg-green-900/40"
-                    : "bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-600"
-                )}
-              >
-                全部通道
-              </Button>
-              <Button
-                variant={activeFilter === 'popular' ? 'default' : 'outline'}
-                size="sm"
-                onClick={() => setActiveFilter('popular')}
-                className={cn(
-                  activeFilter === 'popular'
-                    ? "bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-400 hover:bg-green-200 dark:hover:bg-green-900/40"
-                    : "bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-600"
-                )}
-              >
-                热门资源
-              </Button>
-              <Button
-                variant={activeFilter === 'high-success' ? 'default' : 'outline'}
-                size="sm"
-                onClick={() => setActiveFilter('high-success')}
-                className={cn(
-                  activeFilter === 'high-success'
-                    ? "bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-400 hover:bg-green-200 dark:hover:bg-green-900/40"
-                    : "bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-600"
-                )}
-              >
-                高成功率
-              </Button>
-            </div>
+      <div className="bg-white dark:bg-gray-800 rounded-xl shadow-md p-4 border border-gray-100 dark:border-gray-700">
+        <div className="flex flex-col md:flex-row gap-4">
+          {/* 搜索框 */}
+          <div className="relative flex-grow">
+            <i className="fa-search absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"></i>
+            <input
+              type="text"
+              placeholder="搜索资源通道..."
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              className="w-full pl-10 pr-4 py-3 rounded-lg border border-gray-300 dark:border-gray-600 bg-gray-50 dark:bg-gray-900 focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent transition-all"
+            />
           </div>
-        </CardContent>
-      </Card>
+          
+          {/* 筛选选项 */}
+          <div className="flex flex-wrap gap-3">
+            <button
+              onClick={() => setActiveFilter('all')}
+              className={cn(
+                "px-4 py-2 rounded-lg text-sm font-medium transition-colors",
+                activeFilter === 'all'
+                  ? "bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-400"
+                  : "bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-600"
+              )}
+            >
+              全部通道
+            </button>
+            <button
+              onClick={() => setActiveFilter('popular')}
+              className={cn(
+                "px-4 py-2 rounded-lg text-sm font-medium transition-colors",
+                activeFilter === 'popular'
+                  ? "bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-400"
+                  : "bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-600"
+              )}
+            >
+              热门资源
+            </button>
+            <button
+              onClick={() => setActiveFilter('high-success')}
+              className={cn(
+                "px-4 py-2 rounded-lg text-sm font-medium transition-colors",
+                activeFilter === 'high-success'
+                  ? "bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-400"
+                  : "bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-600"
+              )}
+            >
+              高成功率
+            </button>
+          </div>
+        </div>
+      </div>
       
       {/* 资源通道列表 */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -190,8 +178,8 @@ export default function ResourceChannels() {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5, delay: index * 0.1 }}
+            className="group bg-white dark:bg-gray-800 rounded-xl overflow-hidden shadow-lg hover:shadow-xl transition-all duration-300 border border-gray-100 dark:border-gray-700 flex flex-col h-full"
           >
-            <Card className="group overflow-hidden shadow-lg hover:shadow-xl transition-all duration-300 border border-gray-100 dark:border-gray-700 flex flex-col h-full">
             <div className="relative">
               <img 
                 src={channel.coverImage} 
@@ -203,16 +191,16 @@ export default function ResourceChannels() {
                   <h3 className="text-xl font-bold mb-1">{channel.title}</h3>
                   <div className="flex flex-wrap gap-2 mb-2">
                     {channel.tags.slice(0, 3).map((tag, i) => (
-                      <Badge key={i} variant="secondary" className="bg-white/20 backdrop-blur-sm text-white text-xs">
+                      <span key={i} className="px-2 py-1 bg-white/20 backdrop-blur-sm rounded-full text-xs">
                         {tag}
-                      </Badge>
+                      </span>
                     ))}
                   </div>
                 </div>
               </div>
             </div>
-
-            <CardContent className="p-6 flex-grow flex flex-col">
+            
+            <div className="p-6 flex-grow flex flex-col">
               <p className="text-gray-600 dark:text-gray-400 mb-6 flex-grow">
                 {channel.description}
               </p>
@@ -237,39 +225,37 @@ export default function ResourceChannels() {
                 </div>
               </div>
               
-              <Button asChild className="w-full bg-green-600 hover:bg-green-700">
-                <Link to={`/resource-channels/${channel.id}`}>
-                  查看详情 <ArrowRight className="ml-1 h-4 w-4" />
-                </Link>
-              </Button>
-            </CardContent>
-            </Card>
+              <Link
+                to={`/resource-channels/${channel.id}`}
+                className="block w-full text-center py-3 bg-green-600 hover:bg-green-700 text-white font-medium rounded-lg transition-colors duration-300"
+              >
+                查看详情 <i className="fa-arrow-right ml-1"></i>
+              </Link>
+            </div>
           </motion.div>
         ))}
       </div>
       
       {/* 空状态 */}
       {filteredChannels.length === 0 && (
-        <Card className="p-12 text-center border border-gray-100 dark:border-gray-700">
-          <CardContent className="p-0">
-            <div className="w-20 h-20 mx-auto mb-4 text-gray-400 flex items-center justify-center">
-              <Search className="h-12 w-12" />
-            </div>
-            <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-2">未找到匹配的资源通道</h3>
-            <p className="text-gray-600 dark:text-gray-400 mb-6">
-              尝试调整搜索条件或浏览全部资源通道
-            </p>
-            <Button
-              onClick={() => {
-                setSearchQuery('');
-                setActiveFilter('all');
-              }}
-              className="bg-green-600 hover:bg-green-700"
-            >
-              查看全部资源通道
-            </Button>
-          </CardContent>
-        </Card>
+        <div className="bg-white dark:bg-gray-800 rounded-xl p-12 text-center border border-gray-100 dark:border-gray-700">
+          <div className="w-20 h-20 mx-auto mb-4 text-gray-400">
+            <i className="fa-search text-5xl"></i>
+          </div>
+          <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-2">未找到匹配的资源通道</h3>
+          <p className="text-gray-600 dark:text-gray-400 mb-6">
+            尝试调整搜索条件或浏览全部资源通道
+          </p>
+          <button
+            onClick={() => {
+              setSearchQuery('');
+              setActiveFilter('all');
+            }}
+            className="px-6 py-3 bg-green-600 hover:bg-green-700 text-white font-medium rounded-lg transition-colors duration-300"
+          >
+            查看全部资源通道
+          </button>
+        </div>
       )}
       
       {/* 行动召唤 */}
@@ -282,17 +268,19 @@ export default function ResourceChannels() {
             告诉我们您的需求，我们将为您寻找或创建合适的资源通道
           </p>
           <div className="flex flex-col sm:flex-row justify-center gap-4">
-            <Button asChild className="px-8 bg-gradient-to-r from-green-600 to-teal-500 hover:from-green-700 hover:to-teal-600 shadow-lg shadow-green-500/20 transition-all duration-300 transform hover:-translate-y-1">
-              <Link to="/demand-publish">
-                发布需求 <Upload className="ml-2 h-4 w-4" />
-              </Link>
-            </Button>
-
-            <Button asChild variant="outline" className="px-8 bg-white dark:bg-gray-800 text-green-700 dark:text-green-400 shadow-md hover:shadow-lg border border-gray-200 dark:border-gray-700">
-              <Link to="/resource-onboarding">
-                资源方入驻 <Users className="ml-2 h-4 w-4" />
-              </Link>
-            </Button>
+            <Link
+              to="/demand-publish"
+              className="px-auto py-3 px-8 bg-gradient-to-r from-green-600 to-teal-500 hover:from-green-700 hover:to-teal-600 text-white font-medium rounded-lg shadow-lg shadow-green-500/20 transition-all duration-300 transform hover:-translate-y-1"
+            >
+              发布需求 <i className="fa-paper-plane ml-2"></i>
+            </Link>
+            
+            <Link
+              to="/resource-onboarding"
+              className="px-auto py-3 px-8 bg-white dark:bg-gray-800 text-green-700 dark:text-green-400 font-medium rounded-lg shadow-md hover:shadow-lg transition-all duration-300 border border-gray-200 dark:border-gray-700"
+            >
+              资源方入驻 <i className="fa-sign-in-alt ml-2"></i>
+            </Link>
           </div>
         </div>
       </div>

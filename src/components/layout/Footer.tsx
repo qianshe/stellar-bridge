@@ -1,4 +1,5 @@
 import { Link } from 'react-router-dom';
+import { cn } from '@/lib/utils';
 
 export function Footer() {
   // Footer navigation links

@@ -2,17 +2,6 @@ import { useState } from 'react';
 import { motion } from 'framer-motion';
 import { cn } from '@/lib/utils';
 import { toast } from 'sonner';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import { Textarea } from '@/components/ui/textarea';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Badge } from '@/components/ui/badge';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Progress } from '@/components/ui/progress';
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
-import { Plus, Upload, Eye, MessageCircle, DollarSign, Package, CheckCircle, Clock, X, Edit, Trash2 } from 'lucide-react';
 
 // Mock data for resource categories
 const resourceCategories = [
@@ -459,46 +448,54 @@ export default function ResourceProviderOnboarding() {
       </div>
       
       {/* Status indicator */}
-      <Card className="bg-gradient-to-r from-green-50 to-teal-50 dark:from-gray-900 dark:to-gray-800 border border-green-100 dark:border-green-900/30">
-        <CardContent className="p-6">
-          <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
-            <div>
-              <div className="flex items-center gap-2 mb-1">
-                <CheckCircle className="h-5 w-5 text-green-500" />
-                <span className="font-medium text-gray-900 dark:text-white">入驻状态：已认证企业</span>
-              </div>
-              <p className="text-sm text-gray-600 dark:text-gray-400">您已完成入驻审核，可以开始录入资源信息。</p>
+      <div className="bg-gradient-to-r from-green-50 to-teal-50 dark:from-gray-900 dark:to-gray-800 rounded-xl p-6 border border-green-100 dark:border-green-900/30">
+        <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
+          <div>
+            <div className="flex items-center gap-2 mb-1">
+              <i className="fa-check-circle text-green-500"></i>
+              <span className="font-medium text-gray-900 dark:text-white">入驻状态：已认证企业</span>
             </div>
-            <div className="flex gap-3">
-              <Badge variant="secondary" className="bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-400">
-                <Package className="h-3 w-3 mr-1" /> 绿色能源科技有限公司
-              </Badge>
-              <Badge variant="secondary" className="bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-400">
-                <CheckCircle className="h-3 w-3 mr-1" /> 企业会员
-              </Badge>
-            </div>
+            <p className="text-sm text-gray-600 dark:text-gray-400">您已完成入驻审核，可以开始录入资源信息。</p>
           </div>
-        </CardContent>
-      </Card>
+          <div className="flex gap-3">
+            <span className="px-3 py-1 bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-400 rounded-full text-sm font-medium flex items-center gap-1">
+              <i className="fa-building"></i> 绿色能源科技有限公司
+            </span>
+            <span className="px-3 py-1 bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-400 rounded-full text-sm font-medium flex items-center gap-1">
+              <i className="fa-user"></i> 企业会员
+            </span>
+          </div>
+        </div>
+      </div>
       
       {/* Tab navigation */}
-      <Tabs value={activeTab} onValueChange={(value) => setActiveTab(value as 'onboarding' | 'resources')} className="w-full">
-        <Card className="shadow-sm border border-gray-100 dark:border-gray-700">
-          <CardHeader className="pb-0">
-            <TabsList className="grid w-full grid-cols-2">
-              <TabsTrigger value="onboarding" className="flex items-center gap-2">
-                <Upload className="h-4 w-4" />
-                入驻申请
-              </TabsTrigger>
-              <TabsTrigger value="resources" className="flex items-center gap-2">
-                <Package className="h-4 w-4" />
-                资源管理
-              </TabsTrigger>
-            </TabsList>
-          </CardHeader>
-
-          <TabsContent value="onboarding">
-            <CardContent className="p-6 md:p-8">
+      <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700">
+        <div className="flex border-b border-gray-200 dark:border-gray-700">
+          <button
+            className={`flex-1 py-4 px-6 text-center font-medium transition-colors ${
+              activeTab === 'onboarding'
+                ? 'text-green-600 dark:text-green-400 border-b-2 border-green-600 dark:border-green-400'
+                : 'text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300'
+            }`}
+            onClick={() => setActiveTab('onboarding')}
+          >
+            <i className="fa-sign-in-alt mr-2"></i>入驻申请
+          </button>
+          <button
+            className={`flex-1 py-4 px-6 text-center font-medium transition-colors ${
+              activeTab === 'resources'
+                ? 'text-green-600 dark:text-green-400 border-b-2 border-green-600 dark:border-green-400'
+                : 'text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300'
+            }`}
+            onClick={() => setActiveTab('resources')}
+          >
+            <i className="fa-database mr-2"></i>资源管理
+          </button>
+        </div>
+        
+        {/* Onboarding form */}
+        {activeTab === 'onboarding' && (
+          <div className="p-6 md:p-8">
             <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-6">企业入驻信息</h3>
             
             <form onSubmit={handleOnboardingSubmit} className="space-y-8">
@@ -510,19 +507,19 @@ export default function ResourceProviderOnboarding() {
                 </h4>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   <div className="space-y-2">
-                    <Label htmlFor="companyName">
+                    <label htmlFor="companyName" className="block text-sm font-medium text-gray-700 dark:text-gray-300">
                       企业名称 <span className="text-red-500">*</span>
-                    </Label>
-                    <Input
+                    </label>
+                    <input
                       type="text"
                       id="companyName"
                       name="companyName"
                       value={onboardingForm.companyName}
                       onChange={handleOnboardingChange}
+                      className="w-full px-4 py-3 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-900 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent transition-all"
                       placeholder="请输入企业全称"
                       disabled
                       defaultValue="绿色能源科技有限公司"
-                      className="focus:ring-green-500 focus:border-green-500"
                     />
                     {onboardingErrors.companyName && (
                       <p className="text-red-500 text-sm mt-1">{onboardingErrors.companyName}</p>
@@ -911,11 +908,12 @@ export default function ResourceProviderOnboarding() {
                 </button>
               </div>
             </form>
-            </CardContent>
-          </TabsContent>
+          </div>
+        )}
         
-          <TabsContent value="resources">
-            <CardContent className="p-6 md:p-8">
+        {/* Resources management tab */}
+        {activeTab === 'resources' && (
+          <div className="p-6 md:p-8">
             <div className="flex justify-between items-center mb-6">
               <h3 className="text-lg font-semibold text-gray-900 dark:text-white">我的资源管理</h3>
               <button
@@ -1392,10 +1390,9 @@ export default function ResourceProviderOnboarding() {
                 </div>
               )}
             </div>
-            </CardContent>
-          </TabsContent>
-        </Card>
-      </Tabs>
+          </div>
+        )}
+      </div>
     </div>
   );
 }
