@@ -2,6 +2,13 @@ import { useState } from 'react';
 import { LineChart, Line, BarChart, Bar, PieChart, Pie, Cell, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, AreaChart, Area } from 'recharts';
 import { motion } from 'framer-motion';
 import { cn } from '@/lib/utils';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Badge } from '@/components/ui/badge';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
+import { Users, Database, ShoppingCart, Handshake, UserPlus, Clock, TrendingUp, TrendingDown, Search, Filter, Eye, MoreHorizontal } from 'lucide-react';
 
 // Mock data for dashboard
 const dashboardData = {
@@ -225,11 +232,13 @@ export default function AdminDashboard() {
               <div className="flex items-center space-x-3 mt-4 md:mt-0">
                 <div className="flex bg-white dark:bg-gray-900 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700">
                   {['week', 'month', 'quarter', 'year'].map((range) => (
-                    <button
+                    <Button
                       key={range}
+                      variant="ghost"
+                      size="sm"
                       onClick={() => setDateRange(range)}
                       className={cn(
-                        "px-4 py-2 text-sm font-medium transition-colors",
+                        "transition-colors",
                         dateRange === range
                           ? "text-green-600 dark:text-green-400"
                           : "text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300"
@@ -239,7 +248,7 @@ export default function AdminDashboard() {
                       {range === 'month' && '本月'}
                       {range === 'quarter' && '本季度'}
                       {range === 'year' && '本年'}
-                    </button>
+                    </Button>
                   ))}
                 </div>
                 
@@ -254,28 +263,37 @@ export default function AdminDashboard() {
               {dashboardData.keyMetrics.map((metric, index) => (
                 <motion.div
                   key={metric.id || index}
-                  initial={{ opacity: 0, y: 20 }}animate={{ opacity: 1, y: 0 }}
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
                   transition={{ duration: 0.3, delay: index * 0.05 }}
-                  className="bg-white dark:bg-gray-900 rounded-xl shadow-sm border border-gray-200 dark:border-gray-800 p-6 hover:shadow-md transition-all duration-300"
                 >
-                  <div className={`w-12 h-12 rounded-lg bg-gradient-to-br ${metric.color} flex items-center justify-center text-white mb-4`}>
-                    <i className={`fa ${metric.icon} text-xl`}></i>
-                  </div>
-                  <p className="text-sm font-medium text-gray-500 dark:text-gray-500 mb-1">{metric.title}</p>
-                  <div className="flex items-end justify-between">
-                    <div className="text-2xl font-bold text-gray-900 dark:text-white">
-                      {metric.value}
-                      {metric.unit || ''}
-                    </div>
-                    <div className={`flex items-center text-sm ${
-                      metric.change >= 0 
-                        ? 'text-green-500 dark:text-green-400' 
-                        : 'text-red-500 dark:text-red-400'
-                    }`}>
-                      {metric.change >= 0 ? '+' : ''}{metric.change}%
-                      <i className={`fa ${metric.change >= 0 ? 'fa-arrow-up ml-1' : 'fa-arrow-down ml-1'}`}></i>
-                    </div>
-                  </div>
+                  <Card className="hover:shadow-md transition-all duration-300">
+                    <CardContent className="p-6">
+                      <div className={`w-12 h-12 rounded-lg bg-gradient-to-br ${metric.color} flex items-center justify-center text-white mb-4`}>
+                        {metric.icon === 'fa-users' && <Users className="h-6 w-6" />}
+                        {metric.icon === 'fa-database' && <Database className="h-6 w-6" />}
+                        {metric.icon === 'fa-shopping-cart' && <ShoppingCart className="h-6 w-6" />}
+                        {metric.icon === 'fa-handshake-o' && <Handshake className="h-6 w-6" />}
+                        {metric.icon === 'fa-user-plus' && <UserPlus className="h-6 w-6" />}
+                        {metric.icon === 'fa-clock-o' && <Clock className="h-6 w-6" />}
+                      </div>
+                      <p className="text-sm font-medium text-gray-500 dark:text-gray-500 mb-1">{metric.title}</p>
+                      <div className="flex items-end justify-between">
+                        <div className="text-2xl font-bold text-gray-900 dark:text-white">
+                          {metric.value}
+                          {metric.unit || ''}
+                        </div>
+                        <div className={`flex items-center text-sm ${
+                          metric.change >= 0
+                            ? 'text-green-500 dark:text-green-400'
+                            : 'text-red-500 dark:text-red-400'
+                        }`}>
+                          {metric.change >= 0 ? '+' : ''}{metric.change}%
+                          {metric.change >= 0 ? <TrendingUp className="ml-1 h-3 w-3" /> : <TrendingDown className="ml-1 h-3 w-3" />}
+                        </div>
+                      </div>
+                    </CardContent>
+                  </Card>
                 </motion.div>
               ))}
             </div>
@@ -287,8 +305,13 @@ export default function AdminDashboard() {
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.3 }}
-                className="lg:col-span-2 bg-white dark:bg-gray-900 rounded-xl shadow-sm border border-gray-200 dark:border-gray-800 p-6"
+                className="lg:col-span-2"
               >
+                <Card>
+                  <CardHeader>
+                    <CardTitle>用户增长趋势</CardTitle>
+                  </CardHeader>
+                  <CardContent>
                 <div className="flex justify-between items-center mb-6">
                   <h3 className="text-lg font-semibold text-gray-900 dark:text-white">用户增长趋势</h3>
                   <div className="flex space-x-2">
@@ -300,9 +323,9 @@ export default function AdminDashboard() {
                     </button>
                   </div>
                 </div>
-                <div className="h-80">
-                  <ResponsiveContainer width="100%" height="100%">
-                    <AreaChart data={dashboardData.userGrowthData}>
+                    <div className="h-80">
+                      <ResponsiveContainer width="100%" height="100%">
+                        <AreaChart data={dashboardData.userGrowthData}>
                       <defs>
                         <linearGradient id="colorRegistered" x1="0" y1="0" x2="0" y2="1">
                           <stop offset="5%" stopColor="#3b82f6" stopOpacity={0.8}/>
@@ -341,9 +364,11 @@ export default function AdminDashboard() {
                         fill="url(#colorActive)" 
                         name="活跃用户"
                       />
-                    </AreaChart>
-                  </ResponsiveContainer>
-                </div>
+                        </AreaChart>
+                      </ResponsiveContainer>
+                    </div>
+                  </CardContent>
+                </Card>
               </motion.div>
               
               {/* Resource category distribution */}
@@ -351,9 +376,12 @@ export default function AdminDashboard() {
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.3, delay: 0.1 }}
-                className="bg-white dark:bg-gray-900 rounded-xl shadow-sm border border-gray-200 dark:border-gray-800 p-6"
               >
-                <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-6">资源类别分布</h3>
+                <Card>
+                  <CardHeader>
+                    <CardTitle>资源类别分布</CardTitle>
+                  </CardHeader>
+                  <CardContent>
                 <div className="h-80 flex items-center justify-center">
                   <ResponsiveContainer width="100%" height="100%">
                     <PieChart>
@@ -394,7 +422,9 @@ export default function AdminDashboard() {
                       <span className="text-sm text-gray-700 dark:text-gray-300">{category.name}</span>
                     </div>
                   ))}
-                </div>
+                    </div>
+                  </CardContent>
+                </Card>
               </motion.div>
             </div>
             
