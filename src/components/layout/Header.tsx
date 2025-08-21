@@ -1,9 +1,9 @@
-import { useState } from 'react';
+import { useState, useContext } from 'react';
 import { Link } from 'react-router-dom';
-
 import { useTheme } from '@/hooks/useTheme';
-import { useContext } from 'react';
 import { AuthContext } from '@/contexts/authContext';
+import { Button } from '@/components/ui/button';
+import { Moon, Sun, Menu, X, User, Leaf } from 'lucide-react';
 
 export function Header() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -19,14 +19,14 @@ export function Header() {
   ];
   
   return (
-    <header className="sticky top-0 z-50 bg-white dark:bg-gray-900 border-b border-green-100 dark:border-green-900 transition-all duration-300">
+    <header className="sticky top-0 z-50 bg-background border-b border-border transition-all duration-300">
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-16">
           {/* Logo and brand */}
           <div className="flex items-center">
             <Link to="/" className="flex items-center">
               <div className="w-10 h-10 rounded-full bg-gradient-to-br from-green-500 to-teal-600 flex items-center justify-center mr-3">
-                <i className="fa-solid fa-leaf text-white text-xl"></i>
+                <Leaf className="text-white h-5 w-5" />
               </div>
               <span className="text-xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-green-700 to-teal-600 dark:from-green-400 dark:to-teal-300">星空平台</span>
             </Link>
@@ -38,7 +38,7 @@ export function Header() {
               <Link
                 key={link.label}
                 to={link.path}
-                className="text-gray-700 dark:text-gray-200 hover:text-green-600 dark:hover:text-green-400 font-medium transition-colors duration-200 flex items-center"
+                className="text-foreground/80 hover:text-primary font-medium transition-colors duration-200 flex items-center"
               >
                 {link.label}
               </Link>
@@ -48,75 +48,79 @@ export function Header() {
           {/* Actions: Theme toggle, User menu */}
           <div className="flex items-center space-x-4">
             {/* Theme Toggle */}
-            <button
+            <Button
+              variant="ghost"
+              size="icon"
               onClick={toggleTheme}
-              className="p-2 rounded-full text-gray-600 dark:text-gray-300 hover:bg-green-100 dark:hover:bg-green-900/30 transition-colors duration-200"
+              className="rounded-full hover:bg-accent"
               aria-label={theme === 'light' ? '切换到深色模式' : '切换到浅色模式'}
             >
               {theme === 'light' ? (
-                <i className="fa-solid fa-moon"></i>
+                <Moon className="h-4 w-4" />
               ) : (
-                <i className="fa-solid fa-sun"></i>
+                <Sun className="h-4 w-4" />
               )}
-            </button>
+            </Button>
             
             {/* User Menu */}
             <div className="relative">
               {isAuthenticated ? (
                 <div className="flex items-center space-x-2">
-                  <div className="w-8 h-8 rounded-full bg-green-100 dark:bg-green-900/50 flex items-center justify-center text-green-700 dark:text-green-300">
-                    <i className="fa-solid fa-user"></i>
+                  <div className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center text-primary">
+                    <User className="h-4 w-4" />
                   </div>
-                  <button 
+                  <Button
+                    variant="ghost"
+                    size="sm"
                     onClick={logout}
-                    className="text-sm text-gray-600 dark:text-gray-300 hover:text-green-600 dark:hover:text-green-400"
+                    className="text-sm"
                   >
                     退出
-                  </button>
+                  </Button>
                 </div>
               ) : (
                 <div className="flex space-x-2">
-                  <Link 
-                    to="/login"
-                    className="px-3 py-2 text-sm font-medium text-green-700 dark:text-green-300 hover:text-green-900 dark:hover:text-green-200"
-                  >
-                    登录
-                  </Link>
-                  <Link
-                    to="/register"
-                    className="px-3 py-2 text-sm font-medium text-white bg-green-600 hover:bg-green-700 rounded-md transition-colors duration-200"
-                  >
-                    注册
-                  </Link>
+                  <Button asChild variant="ghost" size="sm">
+                    <Link to="/login">
+                      登录
+                    </Link>
+                  </Button>
+                  <Button asChild size="sm">
+                    <Link to="/register">
+                      注册
+                    </Link>
+                  </Button>
                 </div>
               )}
             </div>
             
             {/* Mobile menu button */}
-            <button
+            <Button
+              variant="ghost"
+              size="icon"
               onClick={() => setIsMenuOpen(!isMenuOpen)}
-              className="md:hidden p-2 rounded-md text-gray-600 dark:text-gray-300 hover:bg-green-100 dark:hover:bg-green-900/30"
+              className="md:hidden"
               aria-label="打开菜单"
             >
               {isMenuOpen ? (
-                <i className="fa-solid fa-times"></i>
+                <X className="h-4 w-4" />
               ) : (
-                <i className="fa-solid fa-bars"></i>
+                <Menu className="h-4 w-4" />
               )}
-            </button>
+            </Button>
           </div>
         </div>
       </div>
       
       {/* Mobile Navigation */}
       {isMenuOpen && (
-        <div className="md:hidden bg-white dark:bg-gray-900 border-t border-green-100 dark:border-green-900">
+        <div className="md:hidden bg-background border-t border-border">
           <div className="px-2 pt-2 pb-3 space-y-1 sm:px-3">
             {navLinks.map((link) => (
               <Link
                 key={link.label}
                 to={link.path}
-                className="block px-3 py-2 rounded-md text-base font-medium text-gray-700 dark:text-gray-200 hover:bg-green-50 dark:hover:bg-green-900/20 hover:text-green-600 dark:hover:text-green-400"
+                className="block px-3 py-2 rounded-md text-base font-medium text-foreground/80 hover:bg-accent hover:text-primary"
                 onClick={() => setIsMenuOpen(false)}
               >
                 {link.label}
