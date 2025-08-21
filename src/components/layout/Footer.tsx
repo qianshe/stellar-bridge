@@ -1,5 +1,4 @@
-import { Link } from 'react-router-dom';
-import { cn } from '@/lib/utils';
+import { Logo, FooterSection } from '@/components/ui';
 
 export function Footer() {
   // Footer navigation links
@@ -37,12 +36,7 @@ export function Footer() {
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           {/* Logo and description */}
           <div className="md:col-span-1">
-            <div className="flex items-center mb-4">
-              <div className="w-10 h-10 rounded-full bg-gradient-to-br from-green-500 to-teal-600 flex items-center justify-center mr-3">
-                <i className="fa-solid fa-leaf text-white text-xl"></i>
-              </div>
-              <span className="text-xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-green-700 to-teal-600 dark:from-green-400 dark:to-teal-300">星空平台</span>
-            </div>
+            <Logo className="mb-4" />
   <div className="flex items-center">
     <p className="text-sm text-gray-600 dark:text-gray-400 mr-4">
       连接资源与需求，共创价值新生态
@@ -76,26 +70,11 @@ export function Footer() {
         <div className="absolute bottom-full left-0 right-0 transform -translate-y-1 bg-white dark:bg-gray-800 shadow-xl p-6 border border-gray-100 dark:border-gray-700 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 z-50">
                 <div className="grid grid-cols-3 gap-8">
                   {footerLinks.map((section) => (
-                    <div key={section.title}>
-                      <h4 className="text-sm font-semibold text-gray-900 dark:text-white uppercase tracking-wider mb-3">
-                        {section.title}
-                      </h4>
-                      <ul className="space-y-2">
-                        {section.links.map((link) => (
-                          <li key={link.label} className="mb-1">
-                            <Link
-                              to={link.path}
-                              className="text-sm text-gray-600 dark:text-gray-400 hover:text-green-600 dark:hover:text-green-400 transition-colors flex items-center group/item"
-                            >
-                              <span>{link.label}</span>
-                              <span className="ml-2 text-green-500 dark:text-green-400 opacity-0 group-hover/item:opacity-100 transition-opacity">
-                                <i className="fa-solid fa-arrow-right text-xs"></i>
-                              </span>
-                            </Link>
-                          </li>
-                        ))}
-                      </ul>
-                    </div>
+                    <FooterSection
+                      key={section.title}
+                      title={section.title}
+                      links={section.links}
+                    />
                   ))}
                 </div>
               </div>
@@ -105,7 +84,7 @@ export function Footer() {
         {/* Bottom section with copyright */}
          <div className="mt-2 pt-2 border-t border-gray-200 dark:border-gray-800">
           <p className="text-sm text-center text-gray-500 dark:text-gray-400">
-            &copy; {new Date().getFullYear()} 星空平台 版权所有 | 木属性生态系统
+            &copy; {new Date().getFullYear()} 星空平台 版权所有 | 资源流通体系
           </p>
         </div>
       </div>

@@ -33,12 +33,12 @@ export default function ResourceConnection() {
           {/* 资源选择界面 */}
           <div className="space-y-4">
             <div className="p-4 border border-gray-200 dark:border-gray-700 rounded-lg hover:border-green-500 cursor-pointer transition-colors">
-              <h3 className="font-medium text-gray-900 dark:text-white">绿色能源资源包</h3>
+              <h3 className="font-medium text-gray-900 dark:text-white">能源资源包</h3>
               <p className="text-sm text-gray-600 dark:text-gray-400">包含太阳能、风能等可再生能源资源</p>
             </div>
             
             <div className="p-4 border border-gray-200 dark:border-gray-700 rounded-lg hover:border-green-500 cursor-pointer transition-colors">
-              <h3 className="font-medium text-gray-900 dark:text-white">生态农业资源包</h3>
+              <h3 className="font-medium text-gray-900 dark:text-white">农业资源包</h3>
               <p className="text-sm text-gray-600 dark:text-gray-400">包含有机种植、生态养殖等农业资源</p>
             </div>
             
