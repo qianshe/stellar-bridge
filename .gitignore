@@ -24,3 +24,6 @@ docs/
 *.njsproj
 *.sln
 *.sw?
+
+# AI Assistant Memory
+.cunzhi-memory/
