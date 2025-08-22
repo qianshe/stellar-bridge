@@ -1,7 +1,16 @@
 import { useState } from 'react';
-import { motion } from 'framer-motion';
-import { cn } from '@/lib/utils';
-import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
+import { Button } from '@/components/ui/button';
+import { ProgressTracker, type ProgressStep } from '@/components/ui/progress-tracker';
+import { DataTable, type Column } from '@/components/ui/data-table';
+import { 
+  ResponsiveContainer, 
+  LineChart, 
+  Line, 
+  XAxis, 
+  YAxis, 
+  CartesianGrid, 
+  Tooltip 
+} from 'recharts';
 
 // Mock data for connection projects
 const connectionProjects = [
@@ -357,6 +366,24 @@ const connectionDetails = {
   ],
 };
 
+// Connection project interface
+interface ConnectionProject {
+  id: number;
+  title: string;
+  demandId: string;
+  resourceId: string;
+  resourceProvider: string;
+  status: string;
+  statusText: string;
+  statusColor: string;
+  progress: number;
+  createTime: string;
+  expectedCompletion: string;
+  recentUpdate: string;
+  messages: number;
+  unreadMessages: number;
+}
+
 export default function ConnectionProgress() {
   // State for view mode (list or detail)
   const [viewMode, setViewMode] = useState<'list' | 'detail'>('list');
@@ -368,6 +395,200 @@ export default function ConnectionProgress() {
   
   // State for active tab in detail view
   const [activeDetailTab, setActiveDetailTab] = useState<'overview' | 'messages' | 'documents' | 'tasks'>('overview');
+
+  // Project columns configuration
+  const projectColumns: Column<ConnectionProject>[] = [
+    {
+      key: 'title',
+      title: '项目名称',
+      render: (project) => (
+        <div>
+          <div className="text-sm font-medium text-gray-900 dark:text-white">
+            {project.title}
+          </div>
+          <div className="text-xs text-gray-500 dark:text-gray-500">
+            需求ID: {project.demandId}
+          </div>
+        </div>
+      )
+    },
+    {
+      key: 'resourceProvider',
+      title: '资源提供方',
+      render: (project) => (
+        <div className="text-sm text-gray-700 dark:text-gray-300">{project.resourceProvider}</div>
+      )
+    },
+    {
+      key: 'status',
+      title: '状态',
+      render: (project) => (
+        <span className={`inline-flex px-2 py-1 text-xs font-medium rounded-full ${project.statusColor}`}>
+          {project.statusText}
+        </span>
+      )
+    },
+    {
+      key: 'progress',
+      title: '进度',
+      render: (project) => (
+        <div>
+          <div className="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2">
+            <div 
+              className={`h-2 rounded-full ${
+                project.status === 'completed' 
+                  ? 'bg-gray-500' 
+                  : project.status === 'canceled'
+                    ? 'bg-red-500'
+                    : 'bg-green-500'
+              }`} 
+              style={{ width: `${project.progress}%` }}
+            ></div>
+          </div>
+          <div className="text-xs text-gray-500 dark:text-gray-500 mt-1">
+            {project.progress}% 完成
+          </div>
+        </div>
+      )
+    },
+    {
+      key: 'createTime',
+      title: '开始日期',
+      render: (project) => (
+        <div className="text-sm text-gray-700 dark:text-gray-300">{project.createTime}</div>
+      )
+    },
+    {
+      key: 'expectedCompletion',
+      title: '预计完成',
+      render: (project) => (
+        <div className="text-sm text-gray-700 dark:text-gray-300">{project.expectedCompletion}</div>
+      )
+    },
+    {
+      key: 'recentUpdate',
+      title: '最近更新',
+      render: (project) => (
+        <div className="text-sm text-gray-700 dark:text-gray-300">{project.recentUpdate}</div>
+      )
+    }
+  ];
+
+  // Convert timeline to ProgressStep format
+  const timelineSteps: ProgressStep[] = connectionDetails.timeline.map((item) => ({
+    id: item.id.toString(),
+    label: item.title,
+    description: item.description,
+    date: item.time,
+    status: item.status === 'completed' ? 'completed' : 
+            item.status === 'in_progress' ? 'current' : 'pending'
+  }));
+
+  // Detail tabs configuration
+  const detailTabs = [
+    {
+      id: 'overview',
+      label: '概览',
+      icon: 'fa-dashboard'
+    },
+    {
+      id: 'messages',
+      label: '沟通记录',
+      icon: 'fa-comments',
+      badge: '8'
+    },
+    {
+      id: 'documents',
+      label: '文档资料',
+      icon: 'fa-file-text-o'
+    },
+    {
+      id: 'tasks',
+      label: '任务管理',
+      icon: 'fa-tasks'
+    }
+  ];
+
+  // Task columns configuration
+  const taskColumns: Column<any>[] = [
+    {
+      key: 'title',
+      title: '任务名称',
+      render: (task) => (
+        <div>
+          <h4 className="text-sm font-medium text-gray-900 dark:text-white">{task.title}</h4>
+          <div className="flex items-center text-xs text-gray-500 dark:text-gray-500 mt-1">
+            <span className="flex items-center mr-4">
+              <i className="fa-user-o mr-1"></i>
+              {task.assignee}
+            </span>
+            <span className="flex items-center">
+              <i className="fa-calendar-o mr-1"></i>
+              截止日期: {task.dueDate}
+            </span>
+          </div>
+        </div>
+      )
+    },
+    {
+      key: 'status',
+      title: '状态',
+      render: (task) => (
+        <span className={`text-xs font-medium px-2 py-1 rounded-full ${
+          task.status === 'completed'
+            ? 'bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400'
+            : task.status === 'in_progress'
+              ? 'bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-400'
+              : 'bg-gray-100 text-gray-700 dark:bg-gray-800 dark:text-gray-400'
+        }`}>
+          {task.status === 'completed' ? '已完成' : task.status === 'in_progress' ? '进行中' : '待处理'}
+        </span>
+      )
+    }
+  ];
+
+  // Document columns configuration
+  const documentColumns: Column<any>[] = [
+    {
+      key: 'name',
+      title: '文档名称',
+      render: (doc) => (
+        <div className="flex items-center">
+          <div className={`w-8 h-8 rounded flex items-center justify-center mr-3 ${
+            doc.type === 'pdf' ? 'bg-red-100 text-red-600' :
+            doc.type === 'doc' ? 'bg-blue-100 text-blue-600' :
+            doc.type === 'xls' ? 'bg-green-100 text-green-600' :
+            'bg-gray-100 text-gray-600'
+          }`}>
+            <i className={`fa-${
+              doc.type === 'pdf' ? 'file-pdf-o' :
+              doc.type === 'doc' ? 'file-word-o' :
+              doc.type === 'xls' ? 'file-excel-o' :
+              'file-o'
+            }`}></i>
+          </div>
+          <div>
+            <div className="text-sm font-medium text-gray-900 dark:text-white">{doc.name}</div>
+            <div className="text-xs text-gray-500 dark:text-gray-500">{doc.size}</div>
+          </div>
+        </div>
+      )
+    },
+    {
+      key: 'uploadTime',
+      title: '上传时间',
+      render: (doc) => (
+        <div className="text-sm text-gray-700 dark:text-gray-300">{doc.uploadTime}</div>
+      )
+    },
+    {
+      key: 'uploader',
+      title: '上传者',
+      render: (doc) => (
+        <div className="text-sm text-gray-700 dark:text-gray-300">{doc.uploader}</div>
+      )
+    }
+  ];
   
   // Handle selecting a connection
   const handleSelectConnection = (connectionId: number) => {
@@ -401,13 +622,8 @@ export default function ConnectionProgress() {
   // Handle file attachment for messages
   const handleFileAttachment = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files) {
-      setMessageAttachments(prev => [...prev, ...Array.from(e.target.files)]);
+      setMessageAttachments(prev => [...prev, ...Array.from(e.target.files || [])]);
     }
-  };
-  
-  // Remove attachment
-  const removeAttachment = (index: number) => {
-    setMessageAttachments(prev => prev.filter((_, i) => i !== index));
   };
   
   return (
@@ -471,115 +687,11 @@ export default function ConnectionProgress() {
           </div>
           
           {/* Connection projects list */}
-          <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700 overflow-hidden">
-            <div className="overflow-x-auto">
-              <table className="min-w-full">
-                <thead className="bg-gray-50 dark:bg-gray-900">
-                  <tr>
-                    <th className="px-6 py-4 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
-                      项目名称
-                    </th>
-                    <th className="px-6 py-4 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
-                      资源提供方
-                    </th>
-                    <th className="px-6 py-4 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
-                      状态
-                    </th>
-                    <th className="px-6 py-4 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
-                      进度
-                    </th>
-                    <th className="px-6 py-4 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
-                      开始日期
-                    </th>
-                    <th className="px-6 py-4 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
-                      预计完成
-                    </th>
-                    <th className="px-6 py-4 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
-                      最近更新
-                    </th>
-                    <th className="px-6 py-4 text-right text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
-                      操作
-                    </th>
-                  </tr>
-                </thead>
-                <tbody className="divide-y divide-gray-200 dark:divide-gray-700">
-                  {connectionProjects.map((project) => (
-                    <tr 
-                      key={project.id} 
-                      className="hover:bg-gray-50 dark:hover:bg-gray-750 transition-colors cursor-pointer"
-                      onClick={() => handleSelectConnection(project.id)}
-                    >
-                      <td className="px-6 py-4 whitespace-nowrap">
-                        <div className="text-sm font-medium text-gray-900 dark:text-white">
-                          {project.title}
-                        </div>
-                        <div className="text-xs text-gray-500 dark:text-gray-500">
-                          需求ID: {project.demandId}
-                        </div>
-                      </td>
-                      <td className="px-6 py-4 whitespace-nowrap">
-                        <div className="text-sm text-gray-700 dark:text-gray-300">{project.resourceProvider}</div>
-                      </td>
-                      <td className="px-6 py-4 whitespace-nowrap">
-                        <span className={`inline-flex px-2 py-1 text-xs font-medium rounded-full ${project.statusColor}`}>
-                          {project.statusText}
-                        </span>
-                      </td>
-                      <td className="px-6 py-4 whitespace-nowrap">
-                        <div className="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2">
-                          <div 
-                            className={`h-2 rounded-full ${
-                              project.status === 'completed' 
-                                ? 'bg-gray-500' 
-                                : project.status === 'canceled'
-                                  ? 'bg-red-500'
-                                  : 'bg-green-500'
-                            }`} 
-                            style={{ width: `${project.progress}%` }}
-                          ></div>
-                        </div>
-                        <div className="text-xs text-gray-500 dark:text-gray-500 mt-1">
-                          {project.progress}% 完成
-                        </div>
-                      </td>
-                      <td className="px-6 py-4 whitespace-nowrap">
-                        <div className="text-sm text-gray-700 dark:text-gray-300">{project.createTime}</div>
-                      </td>
-                      <td className="px-6 py-4 whitespace-nowrap">
-                        <div className="text-sm text-gray-700 dark:text-gray-300">{project.expectedCompletion}</div>
-                      </td>
-                      <td className="px-6 py-4 whitespace-nowrap">
-                        <div className="text-sm text-gray-700 dark:text-gray-300">{project.recentUpdate}</div>
-                      </td>
-                      <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                        <button className="text-green-600 dark:text-green-400 hover:text-green-800 dark:hover:text-green-300">
-                          查看详情
-                        </button>
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
-            
-            {/* Pagination */}
-            <div className="px-6 py-4 border-t border-gray-200 dark:border-gray-700 flex justify-between items-center">
-              <div className="text-sm text-gray-700 dark:text-gray-300">
-                显示 1-5 条，共 12 条
-              </div>
-              <div className="flex space-x-2">
-                <button className="px-3 py-1 rounded border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-900 text-gray-700 dark:text-gray-300 disabled:opacity-50 disabled:cursor-not-allowed" disabled>
-                  <i className="fa-chevron-left"></i>
-                </button>
-                <button className="px-3 py-1 rounded border border-green-500 bg-green-50 dark:bg-green-900/20 text-green-700 dark:text-green-400">1</button>
-                <button className="px-3 py-1 rounded border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-900 text-gray-700 dark:text-gray-300">2</button>
-                <button className="px-3 py-1 rounded border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-900 text-gray-700 dark:text-gray-300">3</button>
-                <button className="px-3 py-1 rounded border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-900 text-gray-700 dark:text-gray-300">
-                  <i className="fa-chevron-right"></i>
-                </button>
-              </div>
-            </div>
-          </div>
+          <DataTable
+            data={connectionProjects}
+            columns={projectColumns}
+            onRowClick={(project) => handleSelectConnection(project.id)}
+          />
         </div>
       )}
       
@@ -637,49 +749,24 @@ export default function ConnectionProgress() {
           {/* Detail tabs */}
           <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700 overflow-hidden">
             <div className="flex border-b border-gray-200 dark:border-gray-700">
-              <button
-                className={`flex-1 py-4 px-6 text-center font-medium transition-colors ${
-                  activeDetailTab === 'overview'
-                    ? 'text-green-600 dark:text-green-400 border-b-2 border-green-600 dark:border-green-400'
-                    : 'text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300'
-                }`}
-                onClick={() => setActiveDetailTab('overview')}
-              >
-                <i className="fa-dashboard mr-2"></i>概览
-              </button>
-              <button
-                className={`flex-1 py-4 px-6 text-center font-medium transition-colors ${
-                  activeDetailTab === 'messages'
-                    ? 'text-green-600 dark:text-green-400 border-b-2 border-green-600 dark:border-green-400'
-                    : 'text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300'
-                }`}
-                onClick={() => setActiveDetailTab('messages')}
-              >
-                <i className="fa-comments mr-2"></i>沟通记录
-                <span className="ml-1 inline-flex items-center justify-center w-4 h-4 rounded-full bg-green-100 text-green-800 text-xs font-medium dark:bg-green-900/30 dark:text-green-400">
-                  8
-                </span>
-              </button>
-              <button
-                className={`flex-1 py-4 px-6 text-center font-medium transition-colors ${
-                  activeDetailTab === 'documents'
-                    ? 'text-green-600 dark:text-green-400 border-b-2 border-green-600 dark:border-green-400'
-                    : 'text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300'
-                }`}
-                onClick={() => setActiveDetailTab('documents')}
-              >
-                <i className="fa-file-text-o mr-2"></i>文档资料
-              </button>
-              <button
-                className={`flex-1 py-4 px-6 text-center font-medium transition-colors ${
-                  activeDetailTab === 'tasks'
-                    ? 'text-green-600 dark:text-green-400 border-b-2 border-green-600 dark:border-green-400'
-                    : 'text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300'
-                }`}
-                onClick={() => setActiveDetailTab('tasks')}
-              >
-                <i className="fa-tasks mr-2"></i>任务管理
-              </button>
+              {detailTabs.map((tab) => (
+                <button
+                  key={tab.id}
+                  className={`flex-1 py-4 px-6 text-center font-medium transition-colors ${
+                    activeDetailTab === tab.id
+                      ? 'text-green-600 dark:text-green-400 border-b-2 border-green-600 dark:border-green-400'
+                      : 'text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300'
+                  }`}
+                  onClick={() => setActiveDetailTab(tab.id as 'overview' | 'messages' | 'documents' | 'tasks')}
+                >
+                  <i className={`${tab.icon} mr-2`}></i>{tab.label}
+                  {tab.badge && (
+                    <span className="ml-1 inline-flex items-center justify-center w-4 h-4 rounded-full bg-green-100 text-green-800 text-xs font-medium dark:bg-green-900/30 dark:text-green-400">
+                      {tab.badge}
+                    </span>
+                  )}
+                </button>
+              ))}
             </div>
             
             {/* Overview tab content */}
@@ -753,47 +840,13 @@ export default function ConnectionProgress() {
                 </div>
                 
                 {/* Timeline */}
-                <div>
-                  <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-6">对接进度时间线</h3>
-                  <div className="relative">
-                    {/* Timeline line */}
-                    <div className="absolute left-4 top-0 bottom-0 w-0.5 bg-gray-200 dark:bg-gray-700"></div>
-                    
-                    {/* Timeline items */}
-                    <div className="space-y-6">
-                      {connectionDetails.timeline.map((item) => (
-                        <div key={item.id} className="relative pl-12">
-                          <div className={`absolute left-0 top-1 w-8 h-8 rounded-full flex items-center justify-center z-10 ${
-                            item.status === 'completed' 
-                              ? 'bg-green-100 text-green-500 dark:bg-green-900/30 dark:text-green-400'
-                              : item.status === 'in_progress'
-                                ? 'bg-blue-100 text-blue-500 dark:bg-blue-900/30 dark:text-blue-400'
-                                : 'bg-gray-100 text-gray-500 dark:bg-gray-800 dark:text-gray-400'
-                          }`}>
-                            {item.status === 'completed' ? (
-                              <i className="fa-check"></i>
-                            ) : item.status === 'in_progress' ? (
-                              <i className="fa-spinner fa-spin"></i>
-                            ) : (
-                              <i className="fa-clock-o"></i>
-                            )}
-                          </div>
-                          
-                          <div className="bg-white dark:bg-gray-800 rounded-lg p-5 shadow-sm border border-gray-200 dark:border-gray-700">
-                            <div className="flex justify-between items-start mb-1">
-                              <h4 className="text-base font-medium text-gray-900 dark:text-white">{item.title}</h4>
-                              {item.time && (
-                                <span className="text-xs text-gray-500 dark:text-gray-500">
-                                  {item.time}
-                                </span>
-                              )}
-                            </div>
-                            <p className="text-sm text-gray-600 dark:text-gray-400">{item.description}</p>
-                          </div>
-                        </div>
-                      ))}
-                    </div>
-                  </div>
+                <div className="bg-white dark:bg-gray-800 rounded-xl p-6 border border-gray-200 dark:border-gray-700">
+                  <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-6">项目进度</h3>
+                  <ProgressTracker
+                    steps={timelineSteps}
+                    orientation="vertical"
+                    showProgress={true}
+                  />
                 </div>
                 
                 {/* Progress chart */}
@@ -812,7 +865,8 @@ export default function ConnectionProgress() {
                             borderRadius: '8px',
                             boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1)'
                           }} 
-                          formatter={(value) => [`${value}%`, '完成度']}
+                          labelFormatter={(value: any) => `${value}月`}
+                          formatter={(value: any) => [`${value}%`, '完成度']}
                         />
                         <Line 
                           type="monotone" 
@@ -947,45 +1001,16 @@ export default function ConnectionProgress() {
               <div className="p-6">
                 <div className="flex justify-between items-center mb-6">
                   <h3 className="text-lg font-semibold text-gray-900 dark:text-white">文档资料</h3>
-                  <button className="px-4 py-2 bg-green-600 hover:bg-green-700 text-white text-sm font-medium rounded-lg transition-colors duration-300 flex items-center">
+                  <Button className="flex items-center">
                     <i className="fa-upload mr-2"></i>
                     上传文档
-                  </button>
+                  </Button>
                 </div>
                 
-                <div className="space-y-4">
-                  {connectionDetails.documents.map((doc) => (
-                    <div key={doc.id} className="bg-white dark:bg-gray-800 rounded-lg p-4 shadow-sm border border-gray-200 dark:border-gray-700 flex items-center justify-between">
-                      <div className="flex items-center">
-                        <div className={`w-10 h-10 rounded flex items-center justify-center mr-4 ${
-                          doc.type === 'pdf' ? 'bg-red-100 text-red-500 dark:bg-red-900/30 dark:text-red-400' :
-                          doc.type === 'docx' ? 'bg-blue-100 text-blue-500 dark:bg-blue-900/30 dark:text-blue-400' :
-                          doc.type === 'jpg' || doc.type === 'png' ? 'bg-green-100 text-green-500 dark:bg-green-900/30 dark:text-green-400' :
-                          'bg-gray-100 text-gray-500 dark:bg-gray-700 dark:text-gray-400'
-                        }`}>
-                          <i className={`fa-file-${doc.type}-o text-lg`}></i>
-                        </div>
-                        <div>
-                          <div className="text-sm font-medium text-gray-900 dark:text-white">{doc.name}</div>
-                          <div className="text-xs text-gray-500 dark:text-gray-500">
-                            {doc.size} · {doc.uploadTime} · 上传者: {doc.uploadedBy}
-                          </div>
-                        </div>
-                      </div>
-                      <div className="flex space-x-2">
-                        <button className="p-2 text-gray-500 hover:text-gray-700 dark:hover:text-gray-300">
-                          <i className="fa-download"></i>
-                        </button>
-                        <button className="p-2 text-gray-500 hover:text-gray-700 dark:hover:text-gray-300">
-                          <i className="fa-eye"></i>
-                        </button>
-                        <button className="p-2 text-gray-500 hover:text-gray-700 dark:hover:text-gray-300">
-                          <i className="fa-ellipsis-v"></i>
-                        </button>
-                      </div>
-                    </div>
-                  ))}
-                </div>
+                <DataTable
+                  data={connectionDetails.documents}
+                  columns={documentColumns}
+                />
               </div>
             )}
             
@@ -994,54 +1019,16 @@ export default function ConnectionProgress() {
               <div className="p-6">
                 <div className="flex justify-between items-center mb-6">
                   <h3 className="text-lg font-semibold text-gray-900 dark:text-white">任务管理</h3>
-                  <button className="px-4 py-2 bg-green-600 hover:bg-green-700 text-white text-sm font-medium rounded-lg transition-colors duration-300 flex items-center">
+                  <Button className="flex items-center">
                     <i className="fa-plus mr-2"></i>
                     创建任务
-                  </button>
+                  </Button>
                 </div>
                 
-                <div className="space-y-4">
-                  {connectionDetails.tasks.map((task) => (
-                    <div key={task.id} className="bg-white dark:bg-gray-800 rounded-lg p-4 shadow-sm border border-gray-200 dark:border-gray-700">
-                      <div className="flex justify-between items-start">
-                        <div className="flex items-start">
-                          <div className={`w-5 h-5 rounded border-2 flex-shrink-0 mt-0.5 mr-3 ${
-                            task.status === 'completed'
-                              ? 'border-green-500 bg-green-500 text-white'
-                              : task.status === 'in_progress'
-                                ? 'border-blue-500 bg-blue-500 text-white'
-                                : 'border-gray-300 dark:border-gray-600'
-                          }`}>
-                            {task.status === 'completed' && <i className="fa-check text-xs"></i>}
-                            {task.status === 'in_progress' && <i className="fa-spinner fa-spin text-xs"></i>}
-                          </div>
-                          <div>
-                            <h4 className="text-sm font-medium text-gray-900 dark:text-white">{task.title}</h4>
-                            <div className="flex items-center text-xs text-gray-500 dark:text-gray-500 mt-1">
-                              <span className="flex items-center mr-4">
-                                <i className="fa-user-o mr-1"></i>
-                                {task.assignee}
-                              </span>
-                              <span className="flex items-center">
-                                <i className="fa-calendar-o mr-1"></i>
-                                截止日期: {task.dueDate}
-                              </span>
-                            </div>
-                          </div>
-                        </div>
-                        <div className={`text-xs font-medium px-2 py-1 rounded-full ${
-                          task.status === 'completed'
-                            ? 'bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400'
-                            : task.status === 'in_progress'
-                              ? 'bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-400'
-                              : 'bg-gray-100 text-gray-700 dark:bg-gray-800 dark:text-gray-400'
-                        }`}>
-                          {task.status === 'completed' ? '已完成' : task.status === 'in_progress' ? '进行中' : '待处理'}
-                        </div>
-                      </div>
-                    </div>
-                  ))}
-                </div>
+                <DataTable
+                  data={connectionDetails.tasks}
+                  columns={taskColumns}
+                />
               </div>
             )}
           </div>

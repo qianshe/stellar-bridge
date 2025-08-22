@@ -2,6 +2,9 @@ import { useState, useEffect } from 'react';
 import { useParams, Link, useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { cn } from '@/lib/utils';
+import { StatCard } from '@/components/ui/stat-card';
+import { Button } from '@/components/ui/button';
+import { FormInput } from '@/components/ui/form';
 
 // Mock resource data for a specific channel
 const mockResources = [
@@ -175,7 +178,6 @@ export default function ResourceChannelDetail() {
   
   // State for filters and pagination
   const [currentChannel, setCurrentChannel] = useState(resourceChannels[0]);
-  const [resources, setResources] = useState(mockResources);
   const [filteredResources, setFilteredResources] = useState(mockResources);
   const [activeFilters, setActiveFilters] = useState({
     priceRange: 'all',
@@ -320,46 +322,39 @@ export default function ResourceChannelDetail() {
             <p className="text-lg md:text-xl opacity-90 max-w-3xl mb-6">{currentChannel.description}</p>
             
             {/* Channel stats */}
-            <div className="flex flex-wrap gap-6">
-              <div className="flex items-center">
-                <div className="w-10 h-10 rounded-full bg-green-600/30 flex items-center justify-center mr-3">
-                  <i className="fa-cubes text-green-400"></i>
-                </div>
-                <div>
-                  <div className="text-2xl font-bold">{currentChannel.stats.total}</div>
-                  <div className="text-sm opacity-80">资源总数</div>
-                </div>
-              </div>
-              
-              <div className="flex items-center">
-                <div className="w-10 h-10 rounded-full bg-green-600/30 flex items-center justify-center mr-3">
-                  <i className="fa-check-circle text-green-400"></i>
-                </div>
-                <div>
-                  <div className="text-2xl font-bold">{currentChannel.stats.available}</div>
-                  <div className="text-sm opacity-80">可对接资源</div>
-                </div>
-              </div>
-              
-              <div className="flex items-center">
-                <div className="w-10 h-10 rounded-full bg-green-600/30 flex items-center justify-center mr-3">
-                  <i className="fa-building text-green-400"></i>
-                </div>
-                <div>
-                  <div className="text-2xl font-bold">{currentChannel.stats.providers}</div>
-                  <div className="text-sm opacity-80">资源提供方</div>
-                </div>
-              </div>
-              
-              <div className="flex items-center">
-                <div className="w-10 h-10 rounded-full bg-green-600/30 flex items-center justify-center mr-3">
-                  <i className="fa-chart-pie text-green-400"></i>
-                </div>
-                <div>
-                  <div className="text-2xl font-bold">{currentChannel.stats.对接成功率}%</div>
-                  <div className="text-sm opacity-80">对接成功率</div>
-                </div>
-              </div>
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+              <StatCard
+                value={currentChannel.stats.total}
+                label="资源总数"
+                icon="fa-cubes"
+                color="green"
+                className="bg-white/10 backdrop-blur-sm border-white/20"
+                textColor="text-white"
+              />
+              <StatCard
+                value={currentChannel.stats.available}
+                label="可对接资源"
+                icon="fa-check-circle"
+                color="green"
+                className="bg-white/10 backdrop-blur-sm border-white/20"
+                textColor="text-white"
+              />
+              <StatCard
+                value={currentChannel.stats.providers}
+                label="资源提供方"
+                icon="fa-building"
+                color="green"
+                className="bg-white/10 backdrop-blur-sm border-white/20"
+                textColor="text-white"
+              />
+              <StatCard
+                value={`${currentChannel.stats.对接成功率}%`}
+                label="对接成功率"
+                icon="fa-chart-pie"
+                color="green"
+                className="bg-white/10 backdrop-blur-sm border-white/20"
+                textColor="text-white"
+              />
             </div>
           </div>
         </div>
@@ -369,23 +364,24 @@ export default function ResourceChannelDetail() {
       <div className="bg-white dark:bg-gray-800 rounded-xl shadow-md p-4">
         <div className="flex flex-col md:flex-row gap-4">
           {/* Search input */}
-          <div className="relative flex-grow">
-            <i className="fa-search absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"></i>
-            <input
+          <div className="flex-grow">
+            <FormInput
               type="text"
               placeholder={`搜索${currentChannel.title}资源...`}
-              className="w-full pl-10 pr-4 py-3 rounded-lg border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-900 focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent transition-all"
+              icon="fa-search"
+              className="w-full"
             />
           </div>
           
           {/* Mobile filter button */}
-          <button 
-            className="md:hidden flex items-center justify-center gap-2 px-4 py-3 bg-white dark:bg-gray-700 border border-gray-200 dark:border-gray-600 rounded-lg text-gray-700 dark:text-gray-300"
+          <Button
+            variant="outline"
+            className="md:hidden"
             onClick={() => setIsFilterOpen(!isFilterOpen)}
           >
-            <i className="fa-filter"></i>
-            <span>筛选</span>
-          </button>
+            <i className="fa-filter mr-2"></i>
+            筛选
+          </Button>
           
           {/* Desktop filter dropdowns */}
           <div className="hidden md:flex gap-3">
@@ -393,16 +389,13 @@ export default function ResourceChannelDetail() {
               <select
                 value={activeFilters.priceRange}
                 onChange={(e) => handleFilterChange('priceRange', e.target.value)}
-                className="appearance-none bg-white dark:bg-gray-700 border border-gray-200 dark:border-gray-600 text-gray-700 dark:text-gray-300 rounded-lg px-4 py-3 pr-10 focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent transition-all"
+                className="min-w-32 appearance-none bg-white dark:bg-gray-700 border border-gray-200 dark:border-gray-600 text-gray-700 dark:text-gray-300 rounded-lg px-4 py-3 pr-10 focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent transition-all"
               >
-                {filterOptions.priceRanges.map(option => (<option key={option.value} value={option.value}>
-                    {option.label}
-                  </option>
-                ))}
+                <option value="all">价格范围</option>
+                <option value="low">¥0-1万</option>
+                <option value="medium">¥1-10万</option>
+                <option value="high">¥10万+</option>
               </select>
-              <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-500">
-                <i className="fa-chevron-down text-xs"></i>
-              </div>
             </div>
             
             <div className="relative">
@@ -411,15 +404,11 @@ export default function ResourceChannelDetail() {
                 onChange={(e) => handleFilterChange('location', e.target.value)}
                 className="appearance-none bg-white dark:bg-gray-700 border border-gray-200 dark:border-gray-600 text-gray-700 dark:text-gray-300 rounded-lg px-4 py-3 pr-10 focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent transition-all"
               >
-                {filterOptions.locations.map(option => (
-                  <option key={option.value} value={option.value}>
-                    {option.label}
-                  </option>
+                <option value="all">所有地区</option>
+                {filterOptions.locations.map(location => (
+                  <option key={location.value} value={location.value}>{location.label}</option>
                 ))}
               </select>
-              <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-500">
-                <i className="fa-chevron-down text-xs"></i>
-              </div>
             </div>
             
             <div className="relative">
@@ -429,14 +418,9 @@ export default function ResourceChannelDetail() {
                 className="appearance-none bg-white dark:bg-gray-700 border border-gray-200 dark:border-gray-600 text-gray-700 dark:text-gray-300 rounded-lg px-4 py-3 pr-10 focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent transition-all"
               >
                 {filterOptions.sortOptions.map(option => (
-                  <option key={option.value} value={option.value}>
-                    {option.label}
-                  </option>
+                  <option key={option.value} value={option.value}>{option.label}</option>
                 ))}
               </select>
-              <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-500">
-                <i className="fa-chevron-down text-xs"></i>
-              </div>
             </div>
           </div>
         </div>
@@ -448,18 +432,19 @@ export default function ResourceChannelDetail() {
               <h3 className="text-sm font-medium text-gray-900 dark:text-white mb-2">价格范围</h3>
               <div className="grid grid-cols-3 gap-2">
                 {filterOptions.priceRanges.map(option => (
-                  <button
+                  <Button
                     key={option.value}
                     onClick={() => handleFilterChange('priceRange', option.value)}
+                    variant={activeFilters.priceRange === option.value ? "default" : "outline"}
+                    size="sm"
                     className={cn(
-                      "text-xs py-2 px-2 rounded-lg text-center",
                       activeFilters.priceRange === option.value
-                        ? "bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-400 border border-green-200 dark:border-green-800"
-                        : "bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 border border-gray-200 dark:border-gray-600"
+                        ? "bg-green-600 text-white border-green-600 hover:bg-green-700"
+                        : ""
                     )}
                   >
                     {option.label}
-                  </button>
+                  </Button>
                 ))}
               </div>
             </div>
@@ -468,18 +453,19 @@ export default function ResourceChannelDetail() {
               <h3 className="text-sm font-medium text-gray-900 dark:text-white mb-2">地区</h3>
               <div className="grid grid-cols-3 gap-2">
                 {filterOptions.locations.map(option => (
-                  <button
+                  <Button
                     key={option.value}
                     onClick={() => handleFilterChange('location', option.value)}
+                    variant={activeFilters.location === option.value ? "default" : "outline"}
+                    size="sm"
                     className={cn(
-                      "text-xs py-2 px-2 rounded-lg text-center",
                       activeFilters.location === option.value
-                        ? "bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-400 border border-green-200 dark:border-green-800"
-                        : "bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 border border-gray-200 dark:border-gray-600"
+                        ? "bg-green-600 text-white border-green-600 hover:bg-green-700"
+                        : ""
                     )}
                   >
                     {option.label}
-                  </button>
+                  </Button>
                 ))}
               </div>
             </div>
@@ -488,18 +474,19 @@ export default function ResourceChannelDetail() {
               <h3 className="text-sm font-medium text-gray-900 dark:text-white mb-2">排序方式</h3>
               <div className="grid grid-cols-2 gap-2">
                 {filterOptions.sortOptions.map(option => (
-                  <button
+                  <Button
                     key={option.value}
                     onClick={() => handleFilterChange('sortBy', option.value)}
+                    variant={activeFilters.sortBy === option.value ? "default" : "outline"}
+                    size="sm"
                     className={cn(
-                      "text-xs py-2 px-2 rounded-lg text-center",
                       activeFilters.sortBy === option.value
-                        ? "bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-400 border border-green-200 dark:border-green-800"
-                        : "bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 border border-gray-200 dark:border-gray-600"
+                        ? "bg-green-600 text-white border-green-600 hover:bg-green-700"
+                        : ""
                     )}
                   >
                     {option.label}
-                  </button>
+                  </Button>
                 ))}
               </div>
             </div>
@@ -516,50 +503,58 @@ export default function ResourceChannelDetail() {
             {activeFilters.priceRange !== 'all' && (
               <div className="inline-flex items-center bg-gray-100 dark:bg-gray-700 rounded-full px-3 py-1 text-sm">
                 <span>价格: {filterOptions.priceRanges.find(p => p.value === activeFilters.priceRange)?.label}</span>
-                <button 
+                <Button 
                   onClick={() => handleFilterChange('priceRange', 'all')}
-                  className="ml-2 text-gray-500 hover:text-gray-700 dark:hover:text-gray-300"
+                  variant="ghost"
+                  size="sm"
+                  className="ml-2 h-auto p-0 text-gray-500 hover:text-gray-700 dark:hover:text-gray-300"
                 >
-                  <i className="fa-times-circle"></i>
-                </button>
+                  <i className="fa-times"></i>
+                </Button>
               </div>
             )}
             
             {activeFilters.location !== 'all' && (
               <div className="inline-flex items-center bg-gray-100 dark:bg-gray-700 rounded-full px-3 py-1 text-sm">
                 <span>地区: {filterOptions.locations.find(l => l.value === activeFilters.location)?.label}</span>
-                <button 
+                <Button 
                   onClick={() => handleFilterChange('location', 'all')}
-                  className="ml-2 text-gray-500 hover:text-gray-700 dark:hover:text-gray-300"
+                  variant="ghost"
+                  size="sm"
+                  className="ml-2 h-auto p-0 text-gray-500 hover:text-gray-700 dark:hover:text-gray-300"
                 >
-                  <i className="fa-times-circle"></i>
-                </button>
+                  <i className="fa-times"></i>
+                </Button>
               </div>
             )}
             
             {activeFilters.selectedTags.map(tag => (
               <div key={tag} className="inline-flex items-center bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-400 rounded-full px-3 py-1 text-sm">
                 <span>{tag}</span>
-                <button 
+                <Button 
                   onClick={() => toggleTagFilter(tag)}
-                  className="ml-2 text-green-500 hover:text-green-700 dark:hover:text-green-300"
+                  variant="ghost"
+                  size="sm"
+                  className="ml-2 h-auto p-0 text-green-500 hover:text-green-700 dark:hover:text-green-300"
                 >
-                  <i className="fa-times-circle"></i>
-                </button>
+                  <i className="fa-times"></i>
+                </Button>
               </div>
             ))}
             
-            <button 
+            <Button 
               onClick={() => setActiveFilters({
                 priceRange: 'all',
                 location: 'all',
-                sortBy: 'recommended',
                 selectedTags: [],
+                sortBy: 'newest'
               })}
-              className="text-sm text-green-600 dark:text-green-400 hover:text-green-700 dark:hover:text-green-300 ml-2"
+              variant="ghost"
+              size="sm"
+              className="text-sm text-gray-500 hover:text-gray-700 dark:hover:text-gray-300 underline h-auto p-0"
             >
-              清除全部
-            </button>
+              清除所有筛选
+            </Button>
           </div>
         )}
       </div>
@@ -572,18 +567,20 @@ export default function ResourceChannelDetail() {
             <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-4">资源标签</h3>
             <div className="flex flex-wrap gap-2 mb-6">
               {currentChannel.tags.map(tag => (
-                <button
+                <Button
                   key={tag}
                   onClick={() => toggleTagFilter(tag)}
+                  variant={activeFilters.selectedTags.includes(tag) ? "default" : "outline"}
+                  size="sm"
                   className={cn(
-                    "px-3 py-1 rounded-full text-sm",
+                    "rounded-full",
                     activeFilters.selectedTags.includes(tag)
-                      ? "bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-400 border border-green-200 dark:border-green-800"
-                      : "bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 border border-gray-200 dark:border-gray-600 hover:bg-gray-200 dark:hover:bg-gray-600"
+                      ? "bg-green-600 text-white border-green-600 hover:bg-green-700"
+                      : ""
                   )}
                 >
                   {tag}
-                </button>
+                </Button>
               ))}
             </div>
             
@@ -598,7 +595,7 @@ export default function ResourceChannelDetail() {
                       value={option.value}
                       checked={activeFilters.priceRange === option.value}
                       onChange={(e) => handleFilterChange('priceRange', e.target.value)}
-                      className="w-4 h-4 text-green-600 dark:text-green-500 focus:ring-green-500 border-gray-300 dark:border-gray-600"
+                      className="mr-3 text-green-600 focus:ring-green-500 focus:ring-2"
                     />
                     <span className="ml-2 text-gray-700 dark:text-gray-300">{option.label}</span>
                   </label>
@@ -617,7 +614,7 @@ export default function ResourceChannelDetail() {
                       value={option.value}
                       checked={activeFilters.location === option.value}
                       onChange={(e) => handleFilterChange('location', e.target.value)}
-                      className="w-4 h-4 text-green-600 dark:text-green-500 focus:ring-green-500 border-gray-300 dark:border-gray-600"
+                      className="mr-3 text-green-600 focus:ring-green-500 focus:ring-2"
                     />
                     <span className="ml-2 text-gray-700 dark:text-gray-300">{option.label}</span>
                   </label>
@@ -636,7 +633,7 @@ export default function ResourceChannelDetail() {
                       value={option.value}
                       checked={activeFilters.sortBy === option.value}
                       onChange={(e) => handleFilterChange('sortBy', e.target.value)}
-                      className="w-4 h-4 text-green-600 dark:text-green-500 focus:ring-green-500 border-gray-300 dark:border-gray-600"
+                      className="mr-3 text-green-600 focus:ring-green-500 focus:ring-2"
                     />
                     <span className="ml-2 text-gray-700 dark:text-gray-300">{option.label}</span>
                   </label>
@@ -645,12 +642,11 @@ export default function ResourceChannelDetail() {
             </div>
             
             <div className="mt-8">
-              <Link
-                to="/demand-publish"
-                className="block w-full py-3 bg-gradient-to-r from-green-600 to-teal-500 hover:from-green-700 hover:to-teal-600 text-white font-medium rounded-lg text-center shadow-md hover:shadow-lg transition-all duration-300"
-              >
-                发布需求 <i className="fa-plus ml-1"></i>
-              </Link>
+              <Button asChild className="w-full">
+                <Link to="/demand-publish">
+                  发布需求 <i className="fa-plus ml-1"></i>
+                </Link>
+              </Button>
             </div>
           </div>
         </aside>
@@ -665,12 +661,12 @@ export default function ResourceChannelDetail() {
             
             <div className="flex items-center gap-2">
               <span className="text-sm text-gray-500 dark:text-gray-400 hidden md:inline">显示:</span>
-              <button className="p-2 rounded-lg text-gray-500 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700">
+              <Button variant="ghost" size="sm" className="p-2">
                 <i className="fa-th-large"></i>
-              </button>
-              <button className="p-2 rounded-lg text-gray-500 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700">
+              </Button>
+              <Button variant="ghost" size="sm" className="p-2">
                 <i className="fa-list"></i>
-              </button>
+              </Button>
             </div>
           </div>
           
@@ -699,9 +695,9 @@ export default function ResourceChannelDetail() {
                       </div>
                     )}
                     <div className="absolute top-3 right-3">
-                      <button className="w-8 h-8 rounded-full bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm flex items-center justify-center text-gray-600 dark:text-gray-400 hover:text-red-500 transition-colors">
+                      <Button variant="ghost" size="sm" className="w-8 h-8 rounded-full bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm p-0 text-gray-600 dark:text-gray-400 hover:text-red-500">
                         <i className="fa-heart-o"></i>
-                      </button>
+                      </Button>
                     </div>
                     <div className="absolute bottom-3 left-3 flex gap-1">
                       {resource.tags.slice(0, 2).map((tag, i) => (
@@ -757,17 +753,16 @@ export default function ResourceChannelDetail() {
               <p className="text-gray-600 dark:text-gray-400 mb-6">
                 尝试调整筛选条件或搜索其他关键词
               </p>
-              <button
+              <Button
                 onClick={() => setActiveFilters({
                   priceRange: 'all',
                   location: 'all',
                   sortBy: 'recommended',
                   selectedTags: [],
                 })}
-                className="px-6 py-3 bg-green-600 hover:bg-green-700 text-white font-medium rounded-lg transition-colors duration-300"
               >
                 清除筛选条件
-              </button>
+              </Button>
             </div>
           )}
           
@@ -775,13 +770,15 @@ export default function ResourceChannelDetail() {
           {totalPages > 1 && (
             <div className="mt-10 flex justify-center">
               <nav className="inline-flex rounded-lg shadow">
-                <button
+                <Button
                   onClick={() => handlePageChange(currentPage - 1)}
                   disabled={currentPage === 1}
-                  className="px-4 py-2 border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-300 rounded-l-lg hover:bg-gray-50 dark:hover:bg-gray-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                  variant="outline"
+                  size="sm"
+                  className="rounded-l-lg rounded-r-none border-r-0"
                 >
                   <i className="fa-chevron-left"></i>
-                </button>
+                </Button>
                 
                 {[...Array(totalPages)].map((_, index) => {
                   // Show first, last, current and adjacent pages
@@ -790,44 +787,38 @@ export default function ResourceChannelDetail() {
                     pageNum === 1 || 
                     pageNum === totalPages || 
                     Math.abs(pageNum - currentPage) <= 1;
-                    
-                  const isEllipsis = 
-                    (pageNum === 2 && currentPage > 3) || 
-                    (pageNum === totalPages - 1 && currentPage < totalPages - 2);
                   
                   if (shouldShow) {
                     return (
-                      <button
+                      <Button
                         key={pageNum}
                         onClick={() => handlePageChange(pageNum)}
+                        variant={pageNum === currentPage ? "default" : "outline"}
+                        size="sm"
                         className={cn(
-                          "px-4 py-2 border-t border-b border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors",
-                          currentPage === pageNum 
-                            ? "bg-green-50 dark:bg-green-900/30 text-green-700 dark:text-green-400 border-l border-r border-green-200 dark:border-green-800 font-medium"
-                            : "border-gray-200 dark:border-gray-700"
+                          "rounded-none border-r-0",
+                          pageNum === currentPage
+                            ? "bg-green-600 text-white border-green-600 hover:bg-green-700"
+                            : ""
                         )}
                       >
                         {pageNum}
-                      </button>
-                    );
-                  } else if (isEllipsis) {
-                    return (
-                      <span key={`ellipsis-${pageNum}`} className="px-4 py-2 border-t border-b border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-400">
-                        ...
-                      </span>
+                      </Button>
                     );
                   }
                   
                   return null;
                 })}
                 
-                <button
+                <Button
                   onClick={() => handlePageChange(currentPage + 1)}
                   disabled={currentPage === totalPages}
-                  className="px-4 py-2 border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-300 rounded-r-lg hover:bg-gray-50 dark:hover:bg-gray-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                  variant="outline"
+                  size="sm"
+                  className="rounded-r-lg rounded-l-none"
                 >
                   <i className="fa-chevron-right"></i>
-                </button>
+                </Button>
               </nav>
             </div>
           )}
@@ -844,19 +835,17 @@ export default function ResourceChannelDetail() {
             发布您的资源需求，我们将为您匹配最合适的资源提供方
           </p>
           <div className="flex flex-col sm:flex-row justify-center gap-4">
-            <Link
-              to="/demand-publish"
-              className="px-auto py-3 px-8 bg-gradient-to-r from-green-600 to-teal-500 hover:from-green-700 hover:to-teal-600 text-white font-medium rounded-lg shadow-lg shadow-green-500/20 transition-all duration-300 transform hover:-translate-y-1"
-            >
-              立即发布需求 <i className="fa-paper-plane ml-2"></i>
-            </Link>
+            <Button asChild size="lg" className="shadow-lg shadow-green-500/20 hover:-translate-y-1 transition-all duration-300">
+              <Link to="/demand-publish">
+                立即发布需求 <i className="fa-paper-plane ml-2"></i>
+              </Link>
+            </Button>
             
-            <Link
-              to="/resource-onboarding"
-              className="px-auto py-3 px-8 bg-white dark:bg-gray-800 text-green-700 dark:text-green-400 font-medium rounded-lg shadow-md hover:shadow-lg transition-all duration-300 border border-gray-200 dark:border-gray-700"
-            >
-              资源方入驻 <i className="fa-sign-in-alt ml-2"></i>
-            </Link>
+            <Button asChild variant="outline" size="lg" className="shadow-md hover:shadow-lg transition-all duration-300">
+              <Link to="/resource-onboarding">
+                资源方入驻 <i className="fa-sign-in-alt ml-2"></i>
+              </Link>
+            </Button>
           </div>
         </div>
       </div>

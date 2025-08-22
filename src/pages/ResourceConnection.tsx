@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'sonner';
+import { Button } from '@/components/ui/button';
 
 export default function ResourceConnection() {
   const navigate = useNavigate();
@@ -50,10 +51,11 @@ export default function ResourceConnection() {
         </div>
         
         <div className="mt-8 flex justify-center">
-          <button
+          <Button
             onClick={handleConnect}
             disabled={isConnecting}
-            className="px-8 py-3 bg-green-600 hover:bg-green-700 text-white font-medium rounded-lg shadow-md hover:shadow-lg transition-all disabled:opacity-80"
+            size="lg"
+            className="shadow-md hover:shadow-lg"
           >
             {isConnecting ? (
               <>
@@ -66,7 +68,7 @@ export default function ResourceConnection() {
                 <i className="fa-arrow-right ml-2"></i>
               </>
             )}
-          </button>
+          </Button>
         </div>
       </div>
     </div>

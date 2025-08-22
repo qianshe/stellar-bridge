@@ -25,7 +25,7 @@ interface StatsSectionProps {
 }
 
 const StatsSection = React.forwardRef<HTMLElement, StatsSectionProps>(
-  ({ title, description, stats, columns = 4, variant = "default", centered = true, className }, ref) => {
+  ({ title, description, stats, columns = 4, className }, ref) => {
     const gridClasses = {
       2: "grid-cols-1 md:grid-cols-2",
       3: "grid-cols-1 md:grid-cols-3",

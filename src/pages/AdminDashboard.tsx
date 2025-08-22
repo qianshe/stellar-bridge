@@ -1,7 +1,10 @@
 import { useState } from 'react';
-import { LineChart, Line, BarChart, Bar, PieChart, Pie, Cell, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, AreaChart, Area } from 'recharts';
+import { BarChart, Bar, PieChart, Pie, Cell, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, AreaChart, Area } from 'recharts';
 import { motion } from 'framer-motion';
 import { cn } from '@/lib/utils';
+import { StatCard } from '@/components/ui/stat-card';
+import { SidebarNav, type NavGroup } from '@/components/ui/sidebar-nav';
+import { DataTable, type Column } from '@/components/ui/data-table';
 
 // Mock data for dashboard
 const dashboardData = {
@@ -77,17 +80,154 @@ const dashboardData = {
   ],
 };
 
+// Navigation groups configuration
+const navGroups: NavGroup[] = [
+  {
+    title: '运营管理',
+    items: [
+      { id: 'dashboard', label: '控制台', icon: 'fa-dashboard' },
+      { id: 'users', label: '用户管理', icon: 'fa-users' },
+      { id: 'resources', label: '资源管理', icon: 'fa-database' },
+      { id: 'demands', label: '需求管理', icon: 'fa-shopping-cart' },
+      { id: 'connections', label: '对接管理', icon: 'fa-handshake-o' },
+      { id: 'content', label: '内容管理', icon: 'fa-file-text-o' },
+      { id: 'analytics', label: '数据分析', icon: 'fa-bar-chart' },
+      { id: 'settings', label: '系统设置', icon: 'fa-cog' },
+    ]
+  },
+  {
+    title: '帮助与支持',
+    items: [
+      { id: 'help', label: '帮助中心', icon: 'fa-question-circle' },
+      { id: 'docs', label: '运营文档', icon: 'fa-book' },
+      { id: 'contact', label: '联系技术支持', icon: 'fa-life-ring' },
+    ]
+  }
+];
+
+// Activity data interface
+interface Activity {
+  id: number;
+  user: string;
+  action: string;
+  target: string;
+  time: string;
+  status: string;
+}
+
+// Task data interface
+interface Task {
+  id: number;
+  type: string;
+  title: string;
+  submitTime: string;
+  priority: string;
+  assignee: string;
+  dueDate: string;
+}
+
 export default function AdminDashboard() {
   // State for date range filter
   const [dateRange, setDateRange] = useState('month'); // 'week', 'month', 'quarter', 'year'
   
   // State for sidebar navigation
   const [activeNavItem, setActiveNavItem] = useState('dashboard');
+
+  // Activity columns configuration
+  const activityColumns: Column<Activity>[] = [
+    {
+      key: 'user',
+      title: '用户',
+      render: (activity) => (
+        <div className="flex items-center">
+          <div className={`w-8 h-8 rounded-full flex items-center justify-center mr-3 flex-shrink-0 ${
+            activity.status === 'success'
+              ? 'bg-green-100 text-green-500 dark:bg-green-900/30 dark:text-green-400'
+            : activity.status === 'warning'
+              ? 'bg-yellow-100 text-yellow-500 dark:bg-yellow-900/30 dark:text-yellow-400'
+            : activity.status === 'pending'
+              ? 'bg-blue-100 text-blue-500 dark:bg-blue-900/30 dark:text-blue-400'
+            : 'bg-gray-100 text-gray-500 dark:bg-gray-800 dark:text-gray-400'
+          }`}>
+            {activity.status === 'success' ? (
+              <i className="fa-check"></i>
+            ) : activity.status === 'warning' ? (
+              <i className="fa-exclamation-triangle"></i>
+            ) : activity.status === 'pending' ? (
+              <i className="fa-clock-o"></i>
+            ) : (
+              <i className="fa-user-o"></i>
+            )}
+          </div>
+          <span className="font-medium">{activity.user}</span>
+        </div>
+      )
+    },
+    {
+      key: 'action',
+      title: '操作',
+      render: (activity) => (
+        <span>
+          {activity.action} <span className="font-medium text-green-600 dark:text-green-400">{activity.target}</span>
+        </span>
+      )
+    },
+    {
+      key: 'time',
+      title: '时间',
+      render: (activity) => (
+        <span className="text-sm text-gray-500 dark:text-gray-500">{activity.time}</span>
+      )
+    }
+  ];
+
+  // Task columns configuration
+  const taskColumns: Column<Task>[] = [
+    {
+      key: 'type',
+      title: '类型',
+      render: (task) => (
+        <span className={`px-2 py-1 text-xs rounded-full ${
+          task.priority === 'high' 
+            ? 'bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-400'
+            : task.priority === 'medium'
+            ? 'bg-yellow-100 text-yellow-700 dark:bg-yellow-900/30 dark:text-yellow-400'
+            : 'bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400'
+        }`}>
+          {task.type}
+        </span>
+      )
+    },
+    {
+      key: 'title',
+      title: '任务',
+      render: (task) => (
+        <div>
+          <div className="font-medium text-gray-900 dark:text-white">{task.title}</div>
+          <div className="text-sm text-gray-500 dark:text-gray-500">提交时间: {task.submitTime}</div>
+        </div>
+      )
+    },
+    {
+      key: 'assignee',
+      title: '负责人',
+      render: (task) => (
+        <span className="text-sm">{task.assignee}</span>
+      )
+    },
+    {
+      key: 'dueDate',
+      title: '截止日期',
+      render: (task) => (
+        <span className="text-sm text-gray-500 dark:text-gray-500">{task.dueDate}</span>
+      )
+    }
+  ];
   
   return (
     <div className="flex min-h-screen bg-gray-50 dark:bg-gray-950">
       {/* Sidebar */}
-      <aside className="hidden lg:block w-64 bg-white dark:bg-gray-900 border-r border-gray-200 dark:border-gray-800 shadow-sm">
+      <aside className="hidden lg:block w-64 bg-white dark:bg-gray-900 border-r border-gray-200 dark:border-gray-800 shadow-sm relative">
         <div className="flex items-center justify-center h-16 border-b border-gray-200 dark:border-gray-800">
           <div className="flex items-center">
             <div className="w-10 h-10 rounded-full bg-gradient-to-br from-green-500 to-teal-600 flex items-center justify-center mr-3">
@@ -97,58 +237,12 @@ export default function AdminDashboard() {
           </div>
         </div>
         
-        <div className="p-4">
-          <p className="text-xs font-semibold text-gray-500 dark:text-gray-500 uppercase tracking-wider mb-3">
-            运营管理
-          </p>
-          <nav className="space-y-1">
-            {[
-              { name: 'dashboard', label: '控制台', icon: 'fa-dashboard' },
-              { name: 'users', label: '用户管理', icon: 'fa-users' },
-              { name: 'resources', label: '资源管理', icon: 'fa-database' },
-              { name: 'demands', label: '需求管理', icon: 'fa-shopping-cart' },
-              { name: 'connections', label: '对接管理', icon: 'fa-handshake-o' },
-              { name: 'content', label: '内容管理', icon: 'fa-file-text-o' },
-              { name: 'analytics', label: '数据分析', icon: 'fa-bar-chart' },
-              { name: 'settings', label: '系统设置', icon: 'fa-cog' },
-            ].map((item) => (
-              <button
-                key={item.name}
-                onClick={() => setActiveNavItem(item.name)}
-                className={cn(
-                  "flex items-center w-full px-3 py-2 text-sm font-medium rounded-lg transition-colors",
-                  activeNavItem === item.name
-                    ? "bg-green-50 text-green-700 dark:bg-green-900/30 dark:text-green-400"
-                    : "text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800"
-                )}
-              >
-                <i className={`fa ${item.icon} mr-3`}></i>
-                {item.label}
-              </button>
-            ))}
-          </nav>
-          
-          <div className="mt-8 pt-6 border-t border-gray-200 dark:border-gray-800">
-            <p className="text-xs font-semibold text-gray-500 dark:text-gray-500 uppercase tracking-wider mb-3">
-              帮助与支持
-            </p>
-            <nav className="space-y-1">
-              {[
-                { name: 'help', label: '帮助中心', icon: 'fa-question-circle' },
-                { name: 'docs', label: '运营文档', icon: 'fa-book' },
-                { name: 'contact', label: '联系技术支持', icon: 'fa-life-ring' },
-              ].map((item) => (
-                <button
-                  key={item.name}
-                  className="flex items-center w-full px-3 py-2 text-sm font-medium rounded-lg text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
-                >
-                  <i className={`fa ${item.icon} mr-3`}></i>
-                  {item.label}
-                </button>
-              ))}
-            </nav>
-          </div>
-        </div>
+        <SidebarNav
+          groups={navGroups}
+          activeItem={activeNavItem}
+          onItemClick={setActiveNavItem}
+          className="pb-20"
+        />
         
         <div className="absolute bottom-0 w-full p-4 border-t border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900">
           <div className="flex items-center">
@@ -252,31 +346,17 @@ export default function AdminDashboard() {
             {/* Key metrics */}
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 gap-6">
               {dashboardData.keyMetrics.map((metric, index) => (
-                <motion.div
-                  key={metric.id || index}
-                  initial={{ opacity: 0, y: 20 }}animate={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.3, delay: index * 0.05 }}
-                  className="bg-white dark:bg-gray-900 rounded-xl shadow-sm border border-gray-200 dark:border-gray-800 p-6 hover:shadow-md transition-all duration-300"
-                >
-                  <div className={`w-12 h-12 rounded-lg bg-gradient-to-br ${metric.color} flex items-center justify-center text-white mb-4`}>
-                    <i className={`fa ${metric.icon} text-xl`}></i>
-                  </div>
-                  <p className="text-sm font-medium text-gray-500 dark:text-gray-500 mb-1">{metric.title}</p>
-                  <div className="flex items-end justify-between">
-                    <div className="text-2xl font-bold text-gray-900 dark:text-white">
-                      {metric.value}
-                      {metric.unit || ''}
-                    </div>
-                    <div className={`flex items-center text-sm ${
-                      metric.change >= 0 
-                        ? 'text-green-500 dark:text-green-400' 
-                        : 'text-red-500 dark:text-red-400'
-                    }`}>
-                      {metric.change >= 0 ? '+' : ''}{metric.change}%
-                      <i className={`fa ${metric.change >= 0 ? 'fa-arrow-up ml-1' : 'fa-arrow-down ml-1'}`}></i>
-                    </div>
-                  </div>
-                </motion.div>
+                <StatCard
+                  key={index}
+                  value={`${metric.value}${metric.unit || ''}`}
+                  label={metric.title}
+                  icon={metric.icon}
+                  delay={index * 0.05}
+                  trend={{
+                    value: Math.abs(metric.change),
+                    isPositive: metric.change >= 0
+                  }}
+                />
               ))}
             </div>
             
@@ -504,40 +584,10 @@ export default function AdminDashboard() {
                     查看全部
                   </button>
                 </div>
-                <div className="space-y-4">
-                  {dashboardData.recentActivities.map((activity) => (
-                    <div key={activity.id} className="flex items-start">
-                      <div className={`w-8 h-8 rounded-full flex items-center justify-center mr-3 flex-shrink-0 ${
-                        activity.status === 'success'
-                          ? 'bg-green-100 text-green-500 dark:bg-green-900/30 dark:text-green-400'
-                        : activity.status === 'warning'
-                          ? 'bg-yellow-100 text-yellow-500 dark:bg-yellow-900/30 dark:text-yellow-400'
-                        : activity.status === 'pending'
-                          ? 'bg-blue-100 text-blue-500 dark:bg-blue-900/30 dark:text-blue-400'
-                        : 'bg-gray-100 text-gray-500 dark:bg-gray-800 dark:text-gray-400'
-                      }`}>
-                        {activity.status === 'success' ? (
-                          <i className="fa-check"></i>
-                        ) : activity.status === 'warning' ? (
-                          <i className="fa-exclamation-triangle"></i>
-                        ) : activity.status === 'pending' ? (
-                          <i className="fa-clock-o"></i>
-                        ) : (
-                          <i className="fa-user-o"></i>
-                        )}
-                      </div>
-                      <div className="flex-1">
-                        <p className="text-sm text-gray-900 dark:text-white">
-                          <span className="font-medium">{activity.user}</span> {activity.action}
-                          <span className="font-medium text-green-600 dark:text-green-400 ml-1">{activity.target}</span>
-                        </p>
-                        <p className="text-xs text-gray-500 dark:text-gray-500 mt-1">
-                          {activity.time}
-                        </p>
-                      </div>
-                    </div>
-                  ))}
-                </div>
+                <DataTable
+                  data={dashboardData.recentActivities}
+                  columns={activityColumns}
+                />
               </motion.div>
               
                {/* Pending tasks */}
@@ -553,46 +603,10 @@ export default function AdminDashboard() {
                      查看全部
                    </button>
                  </div>
-                 <div className="space-y-4">
-                   {dashboardData.pendingTasks.map((task) => (
-                     <div key={task.id} className={`flex items-start p-3 bg-white dark:bg-gray-800 rounded-lg border border-gray-100 dark:border-gray-700 ${
-                       task.priority === 'high' ? 'border-l-4 border-red-500' : ''
-                     }`}>
-                       <div className="flex-1">
-                         <div className="flex justify-between items-start mb-1">
-                           <h4 className="text-sm font-medium text-gray-900 dark:text-white">{task.title}</h4>
-                           <span className={`px-2 py-0.5 rounded-full text-xs ${
-                             task.priority === 'high'
-                               ? 'bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-400'
-                               : task.priority === 'medium'
-                                 ? 'bg-yellow-100 text-yellow-700 dark:bg-yellow-900/30 dark:text-yellow-400'
-                               : 'bg-gray-100 text-gray-700 dark:bg-gray-700 dark:text-gray-400'
-                           }`}>
-                             {task.priority === 'high' ? '紧急' : '普通'}
-                           </span>
-                         </div>
-                         <div className="flex items-center text-xs text-gray-500 dark:text-gray-500 mt-1">
-                           <span className="flex items-center mr-4">
-                             <i className="fa-user-o mr-1"></i>
-                             {task.assignee}
-                           </span>
-                           <span className="flex items-center">
-                             <i className="fa-calendar-o mr-1"></i>
-                             {task.dueDate}
-                           </span>
-                         </div>
-                       </div>
-                       <div className="flex space-x-2 ml-4">
-                         <button className="px-3 py-1 text-xs bg-green-600 hover:bg-green-700 text-white rounded transition-colors">
-                           处理
-                         </button>
-                         <button className="px-3 py-1 text-xs bg-gray-200 hover:bg-gray-300 text-gray-700 dark:bg-gray-700 dark:hover:bg-gray-600 dark:text-gray-300 rounded transition-colors">
-                           延后
-                         </button>
-                       </div>
-                     </div>
-                   ))}
-                 </div>
+                 <DataTable
+                   data={dashboardData.pendingTasks}
+                   columns={taskColumns}
+                 />
                </motion.div>
             </div>
           </div>
