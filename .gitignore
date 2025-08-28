@@ -16,7 +16,7 @@ dist-ssr
 doc/
 docs/
 .vscode/*
-!.vscode/extensions.json
+.promptx/*
 .idea
 .DS_Store
 *.suo
